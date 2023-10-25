@@ -1,9 +1,26 @@
 
+import {useState} from 'react';
 import './App.css'
 import LoggedNavBar from './LoggedNavBar.tsx'
 import TicketCard from './Tickets/TicketCard.tsx'
 
+interface iTicket{
+  draft:boolean,
+  urgency:number,
+  title:string,
+  body:string,
+  tags:string[],
+  person_assigned:string[],
+}
+
 function App() {
+  const initial_tickets:iTicket[] = [
+    {draft:false, urgency:1, title:"Hello", body:"This is a test", tags:["foo","bar"],person_assigned:["nathan"]},
+    {draft:false, urgency:0, title:"Hello", body:"This is a test", tags:["foo","bar"],person_assigned:["nathan"]},
+    {draft:false, urgency:2, title:"Hello", body:"This is a test", tags:["foo","bar"],person_assigned:["nathan"]},
+    {draft:true, urgency:0, title:"World", body:"I wish I had internet", tags:["foo","bar"],person_assigned:["nathan"]}
+  ]
+  const [tickets, setTickets] = useState<iTicket[]>(initial_tickets);
   return (
     <>
       <LoggedNavBar />
@@ -31,19 +48,26 @@ function App() {
             </select>
           </li>
         </ul>
-        <div className="row gap-0 row-gap-2">
-          <TicketCard title="World">Hello, this is a test</TicketCard>
-          <TicketCard title="World" className="urgent">Hello, I wish I had internet</TicketCard>
-          <TicketCard title="World" className="hurry">Hello</TicketCard>
-          <TicketCard title="World">Hello</TicketCard>
-          <TicketCard title="World">Hello</TicketCard>
-          <TicketCard title="World">Hello</TicketCard>
-          
-        </div>
+        <TicketCardWrapper tickets={tickets}/>
 
       </div>
     </>
   )
+}
+interface iTickets_props{
+  tickets:iTicket[]
+}
+function TicketCardWrapper(props:iTickets_props){
+  const urgency_map:string[]=["", "hurry", "urgent"]
+  const [show_draft, setShowDraft] = useState<boolean>(true); //TODO:Switch that option to the context API later on
+  return (<div className="row gap-0 row-gap-2">
+      {
+        props.tickets.map(ticket=> !ticket.draft || (ticket.draft && show_draft)?
+          <TicketCard title={ticket.title} className={(urgency_map[ticket.urgency])+(ticket.draft?" draft":"")} tags={ticket.tags}>{ticket.body}</TicketCard>
+          :<></>
+        )
+      }
+  </div>)
 }
 
 // import avatar from '../public/profile/31c88339bc905db98016c725dd3d418a.jpeg';
