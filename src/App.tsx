@@ -41,7 +41,7 @@ function App() {
             <input type="checkbox" className="form-check-input"></input>
           </li>
           <li className="nav-item">
-            <label for="sort_mode">Sort by</label>
+            <label htmlFor="sort_mode">Sort by</label>
             <select name="sort_mode" className="form-control">
               <option value="foo">Importance</option>
               <option value="foo">Due date</option>
