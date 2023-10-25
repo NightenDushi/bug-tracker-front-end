@@ -24,3 +24,10 @@
 .ticket_card.draft{
     background-color:#d6d6d6;
 }
+.ticket_card.done{
+    opacity:0.6;
+}
+.ticket_card.done:before{
+    opacity:0.9;
+    box-shadow:None;
+}
