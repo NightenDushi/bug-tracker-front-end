@@ -14,7 +14,7 @@ function TicketCard(pProps) {
             <img className="img rounded-circle shadow" width="40" height="40" src="../public/avatar/31c88339bc905db98016c725dd3d418a.jpeg" />
         </div><ul className="nav d-flex mb-2">
             {tags.map(tag=>
-                <TicketTags color={tag_color_map[tag]}>{tag}</TicketTags>
+                <TicketTags key={tag.id} color={tag_color_map[tag.text]}>{tag.text}</TicketTags>
                 )}
         </ul>
         <p className="card-text">{children}</p>
