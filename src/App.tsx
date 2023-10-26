@@ -30,6 +30,8 @@ function App() {
   const [showCompleted, setCompleted] = useState<boolean>(false);
   const [showDraft, setDraft] = useState<boolean>(false);
 
+  const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
+
   return (
     <>
       <UserContext.Provider value={{name:user_name, isAdmin:user_is_admin, setAdmin:SetUserAdmin}}>
@@ -37,37 +39,100 @@ function App() {
       </UserContext.Provider>
       <div className="container grid">
         <h1>My tickets</h1>
-        {user_is_admin && (<a href="#" className="btn btn-primary mb-3">Create a ticket</a>)}
+        {user_is_admin && (<a href="#" className="btn btn-primary mb-3" onClick={
+          ()=>{
+            setShowNewTicketModal(true);
+            // setTickets(
+            //   pTickets=>[
+            //     ...pTickets, {id:10,isDone:false, draft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]}
+            //   ]
+            // )
+        }
+        }>
+          Create a ticket
+        </a>)}
         <TicketFilterContext.Provider value={{isAdmin:user_is_admin,
                                             showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,
                                             setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft}}>
-        <ul className="nav bg-clear shadow mb-3 rounded-2 p-3">
-          <li className="nav-item me-3">
-            <label className="me-1" htmlFor="owned">Show only my issues</label>
-            <input type="checkbox" className="form-check-input" id="owned" name="owned" defaultChecked></input>
-          </li>
-          {user_is_admin && (<li className="nav-item me-3">
-            <label className="me-1" htmlFor="draft">Show Drafts</label>
-            <input type="checkbox" className="form-check-input" id="draft" name="draft" checked={showDraft} onChange={()=>{setDraft(!showDraft)}}></input>
-          </li>)}
-          <li className="nav-item me-3">
-            <label className="me-1" htmlFor="completed">Show Completed</label>
-            <input type="checkbox" className="form-check-input" id="completed" name="completed" checked={showCompleted} onChange={()=>{setCompleted(!showCompleted)}}></input>
-          </li>
-          <li className="nav-item">
-            <label htmlFor="sort_mode">Sort by</label>
-            <select name="sort_mode" className="form-control">
-              <option value="foo">Importance</option>
-              <option value="foo">Due date</option>
-            </select>
-          </li>
-        </ul>
+          <TicketFilter/>
           <TicketCardWrapper tickets={tickets}/>
         </TicketFilterContext.Provider>
-
       </div>
+      {showNewTicketModal && (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
+        addTicket={(pName:string, pBody:string)=>{
+          setTickets(
+              pTickets=>[
+                ...pTickets, {id:pTickets[pTickets.length-1].id+1,
+                              isDone:false, draft:false, urgency:1,
+                              title:pName, body:pBody,
+                              tags:[{id:1, text:"foo"},{id:2,text:"bar"}],
+                              person_assigned:["nathan"]}
+              ]
+            )
+        }} />)}
     </>
   )
+
+}
+
+export function NewTicketModal(props:any) {
+  const [name, setName] = useState<string>("")
+  const [body, setBody] = useState<string>("")
+  return <div className={"modal fade show d-block"} tabIndex={-1} role="dialog">
+    <div className="modal-dialog" role="document">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">New tickets</h5>
+          <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={props.close}>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div className="modal-body">
+          <label htmlFor="ticket_name">Title</label>
+          <input className="form-control" name="ticket_name" id="ticket_name"
+                onChange={(e)=>{e.preventDefault();setName(e.target.value)}}
+                onKeyDown={(e)=>{if (e.key === 'Enter') {props.addTicket(name, body);props.close();}}}
+          ></input>
+          <label htmlFor="ticket_body">Body</label>
+          <textarea className="form-control" name="ticket_body" id="ticket_name"
+                onChange={(e)=>{e.preventDefault();setBody(e.target.value)}}
+                onKeyDown={(e)=>{if (e.key === 'Enter') {props.addTicket(name, body);props.close();}}}
+          ></textarea>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-primary"
+            onClick={()=>{props.addTicket(name);props.close()}}
+          >Create</button>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+function TicketFilter() {
+  const {isAdmin, showDraft, setDraft, showCompleted, setCompleted} = useContext(TicketFilterContext);
+  return <ul className="nav bg-clear shadow mb-3 rounded-2 p-3">
+    <li className="nav-item me-3">
+      <label className="me-1" htmlFor="owned">Show only my issues</label>
+      <input type="checkbox" className="form-check-input" id="owned" name="owned" defaultChecked></input>
+    </li>
+    {isAdmin && (<li className="nav-item me-3">
+      <label className="me-1" htmlFor="draft">Show Drafts</label>
+      <input type="checkbox" className="form-check-input" id="draft" name="draft" checked={showDraft} onChange={() => { setDraft(!showDraft); } }></input>
+    </li>)}
+    <li className="nav-item me-3">
+      <label className="me-1" htmlFor="completed">Show Completed</label>
+      <input type="checkbox" className="form-check-input" id="completed" name="completed" checked={showCompleted} onChange={() => { setCompleted(!showCompleted); } }></input>
+    </li>
+    <li className="nav-item">
+      <label htmlFor="sort_mode">Sort by</label>
+      <select id="sort_mode" name="sort_mode" className="form-control">
+        <option value="foo">Importance</option>
+        <option value="foo">Due date</option>
+      </select>
+    </li>
+  </ul>;
 }
 
 function TicketCardWrapper(props:ITickets_props){
