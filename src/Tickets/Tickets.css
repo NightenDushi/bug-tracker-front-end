@@ -4,25 +4,25 @@
     left:0; top:0;
     width:15px;
     height:100%;
-    background:gray;
+    background:var(--bs-gray);
     border-radius:5px 0 0 5px;
     box-shadow:8px 0 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s;
 }
 
 .ticket_card.urgent:before{
-    background:red;
+    background:var(--bs-red);
 }
 .ticket_card.hurry:before{
-    background:orange;
+    background:var(--bs-orange);
 }
 .ticket_card.draft:before{
     background-size:20px 22px;
     background-color:#afafaf;
     background-image:linear-gradient(0deg, #ffffff 50%, transparent 25%);
 }
-.ticket_card.draft{
-    background-color:#d6d6d6;
+.card:has(> div.ticket_card.draft){
+    background-color:var(--bs-gray-400);
 }
 .ticket_card.done{
     opacity:0.6;
