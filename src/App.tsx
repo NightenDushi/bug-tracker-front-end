@@ -18,11 +18,11 @@ export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:fals
 
 function App() {
   const initial_tickets:ITicket[] = [
-    {id:1,isDone:false, draft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
-    {id:2,isDone:false, draft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
-    {id:3,isDone:true, draft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
-    {id:4,isDone:false, draft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
-    {id:5,isDone:false, draft:true, urgency:0, title:"World", body:"I wish I had internet", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]}
+    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
+    {id:2,isDone:false, isDraft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["tim"]},
+    {id:3,isDone:true, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
+    {id:4,isDone:false, isDraft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
+    {id:5,isDone:false, isDraft:true, urgency:0, title:"World", body:"I wish I had internet", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]}
   ]
   const [tickets, setTickets] = useState<ITicket[]>(initial_tickets);
   
@@ -57,17 +57,16 @@ function App() {
         </TicketFilterContext.Provider>
       </div>
       {showNewTicketModal && (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-        addTicket={(pName:string, pBody:string, pActiveTags:string[])=>{
+        addTicket={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
           const ticket_tags:ITags[] = []
           pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
-          console.log(pActiveTags);
           setTickets(
               pTickets=>[
                 ...pTickets, {id:pTickets[pTickets.length-1].id+1,
-                              isDone:false, draft:false, urgency:1,
+                              isDone:false, isDraft:pIsDraft, urgency:pUrgency,
                               title:pName, body:pBody,
                               tags:ticket_tags,
-                              person_assigned:["nathan"]}
+                              person_assigned:pActiveDev}
               ]
             )
         }} />)}
