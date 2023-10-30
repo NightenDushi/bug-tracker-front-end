@@ -15,7 +15,7 @@ function TicketCard(props:ITicket_props) {
             <div>
               {person_assigned.map((dev_name)=>{
                     const dev = DevAvailable.find((e)=> e.name == dev_name)
-                    return <img className={"img rounded-circle shadow me-2"} width="40" height="40"
+                    return <img key={dev?.name} className={"img rounded-circle shadow me-2"} width="40" height="40"
                         src={"../public/avatar/"+dev?.image} />
                 })}
           </div>
