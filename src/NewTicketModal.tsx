@@ -64,7 +64,7 @@ export function NewTicketModal(props: any) {
         </div>
 
         <ul className="container d-flex list-unstyled">
-            {TagsAvailable.map((tag, tagId)=>
+            {TagsAvailable.map((tag)=>
                 <a href="#" className="text-decoration-none"
                 onClick={()=>{setActiveTags((pTags)=>{
                     //Add or remove the tag from the active tag array

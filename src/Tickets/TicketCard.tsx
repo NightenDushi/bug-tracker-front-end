@@ -3,10 +3,9 @@ import { ITicket_props } from '../@types/tickets';
 import { DevAvailable } from '../const/DevAvailable.tsx';
 import './Tickets.css'
 
-
 function TicketCard(props:ITicket_props) {
     
-    const {children, title, className, tags, isDraft, person_assigned} = props;
+    const {children, title, className, tags, isDraft, isDone, person_assigned, completedAction} = props;
         
     return (<div className='card col col-sm-6 col-md-4 col-lg-3'>
         <div className={"card-body ticket_card "+className}>
@@ -26,19 +25,14 @@ function TicketCard(props:ITicket_props) {
                 )}
         </ul>
         <p className="card-text">{children}</p>
-        <CompletedPublishBtn isDraft={isDraft}/>
+        <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary">More...</a>
         </div>
     </div>)
 }
 
 function CompletedPublishBtn(props){
-    if (props.isDraft){
-        return (<a className="btn btn-secondary shadow me-2" href="#">Publish</a>)
-    } else {
-        return (<span className="btn btn-secondary shadow me-2"><label role="button" className="me-1" >Completed<input type="checkbox" className="ms-1"/></label></span>)
-
-    }
+    return (<a className="btn btn-secondary shadow me-2 w-50" href="#" onClick={props.action}>{(props.isDraft)?"Publish":((props.isDone)?"Re-enable":"Complete")}</a>)
 }
 
 export default TicketCard

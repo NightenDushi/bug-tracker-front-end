@@ -53,7 +53,7 @@ function App() {
                                             showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,
                                             setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft}}>
           <TicketFilter/>
-          <TicketCardWrapper tickets={tickets}/>
+          <TicketCardWrapper tickets={tickets} setTickets={setTickets}/>
         </TicketFilterContext.Provider>
       </div>
       {showNewTicketModal && (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
