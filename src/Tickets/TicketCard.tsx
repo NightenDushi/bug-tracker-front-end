@@ -7,6 +7,8 @@ import { NewTicketModal } from '../NewTicketModal.tsx';
 import './Tickets.css'
 import { ITags } from '../@types/tags';
 
+import clockIcon from '../assets/clock-regular.svg'
+
 function TicketCard(props:ITicket_props) {
     const {children, isDone, isDraft, isUserAdmin, urgency, title, className, tags, person_assigned, dueDate, completedAction, setTickets} = props;
 
@@ -32,6 +34,7 @@ function TicketCard(props:ITicket_props) {
         <p className="card-text">{children}</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
+        {(dueDate!==undefined)&&(<p className="d-block m-0"><img alt="clock icon" src={clockIcon} width="10" style={{marginBottom:3, marginRight:5}}/>{"Due on "+dueDate.toDateString().slice(0,-5)}</p>)}
         </div>
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}

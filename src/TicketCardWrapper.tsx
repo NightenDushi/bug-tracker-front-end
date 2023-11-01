@@ -14,6 +14,7 @@ export function TicketCardWrapper(props: ITickets_props) {
                     tags={ticket.tags} isDraft={ticket.isDraft} isDone={ticket.isDone}
                     urgency={ticket.urgency}
                     person_assigned={ticket.person_assigned}
+                    dueDate={ticket.dueDate}
                     isUserAdmin={props.isUserAdmin}
 
                     completedAction={TicketCompletedAction(props, ticket_index)}

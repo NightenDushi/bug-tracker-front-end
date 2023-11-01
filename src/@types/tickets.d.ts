@@ -8,6 +8,7 @@ export interface ITicket{
     body:string,
     tags:ITags[],
     person_assigned:string[],
+    dueDate?:Date,
   }
 
 export type ITicket_props = {
@@ -21,6 +22,7 @@ export type ITicket_props = {
   className:string,
   tags:ITags[],
   person_assigned:string[],
+  dueDate?:Date,
   completedAction(e:MouseEvent):void,
   setTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void
 }
