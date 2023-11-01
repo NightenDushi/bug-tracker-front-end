@@ -18,7 +18,7 @@ export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:fals
 
 function App() {
   const initial_tickets:ITicket[] = [
-    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"],dueDate:new Date()},
+    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"],dueDate:new Date("2023-11-01")},
     {id:2,isDone:false, isDraft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["tim"]},
     {id:3,isDone:true, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
     {id:4,isDone:false, isDraft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},

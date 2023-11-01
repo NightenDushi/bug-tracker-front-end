@@ -3,6 +3,7 @@ import { TicketTags } from './Tickets/TicketTags.tsx';
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
+import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 
 export function NewTicketModal(props: any) {
   const isAdmin = (props.isAdmin === undefined) ? true : props.isAdmin;
@@ -15,13 +16,13 @@ export function NewTicketModal(props: any) {
 
   const [activeTags, setActiveTags] = useState<string[]>(props?.tags||[])
   const [activeDev, setActiveDev] = useState<string[]>(props?.person_assigned||[])
+  
+  const [dueDate, setDueDate] = useState<string>(props?.dueDate||"")
 
   const addticket = (e:(KeyboardEvent|MouseEvent))=>{
-        if (isAdmin) {props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev); props.close()}
+        if (isAdmin) {props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev, dueDate); props.close()}
         else props.actionTicketModal(e)
     }
-
-
 
   if (isAdmin) return <div className="modal d-block" tabIndex={-1} role="dialog">
     <div className="modal-dialog" role="document">
@@ -70,20 +71,28 @@ export function NewTicketModal(props: any) {
           ></textarea>
         </div>
 
-        <ul className="container d-flex list-unstyled">
+        <div className="container d-flex justify-content-between">
+        <ul className="d-flex list-unstyled">
             {TagsAvailable.map((tag)=>
                 <a href="#" className="text-decoration-none"
                 onClick={()=>{setActiveTags((pTags)=>{
                     //Add or remove the tag from the active tag array
                     if (!activeTags.includes(tag)) return [...pTags, tag]
                     else return pTags.filter((e) => { return e !== tag })     
-                    })}}
+                })}}
                 key={tag}
                 >
                     <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
                 </a>
             )}
         </ul>
+        <label htmlFor="due_date" className={"w-50 "+((dueDate=="")?"opacity-50":"")}>Due date
+        <input id="due_date" className={"form-control"} type="date"
+        value={dueDate}
+        onChange={(e)=>{setDueDate(e.target.value)}}></input>
+
+        </label>
+        </div>
 
         <div className="modal-footer">
           <label>Keep as draft</label><input type="checkbox" checked={isDraft} onChange={(e)=>{setDraft((e.target.value === 'true'))}}></input>
@@ -126,14 +135,17 @@ export function NewTicketModal(props: any) {
           <p className="mt-2">{body}</p>
         </div>
 
-        <ul className="container d-flex list-unstyled">
-            {TagsAvailable.map((tag)=>
-                <span className={"text-decoration-none"+(activeTags.includes(tag)?"":" d-none")} key={tag}>
-                    <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
-                </span>
-            )}
-        </ul>
-
+        <div className="container d-flex justify-content-between">
+            <ul className="d-flex list-unstyled">
+                {TagsAvailable.map((tag)=>
+                    <span className={"text-decoration-none"+(activeTags.includes(tag)?"":" d-none")} key={tag}>
+                        <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
+                    </span>
+                )}
+            </ul>
+            <TicketDueDate dueDate={new Date(dueDate)}/>
+        </div>
+        
         <div className="modal-footer">
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={addticket}>Completed</button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>

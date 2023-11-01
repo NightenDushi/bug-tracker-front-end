@@ -7,7 +7,7 @@ import { NewTicketModal } from '../NewTicketModal.tsx';
 import './Tickets.css'
 import { ITags } from '../@types/tags';
 
-import clockIcon from '../assets/clock-regular.svg'
+import { TicketDueDate } from './TicketDueDate.tsx';
 
 function TicketCard(props:ITicket_props) {
     const {children, isDone, isDraft, isUserAdmin, urgency, title, className, tags, person_assigned, dueDate, completedAction, setTickets} = props;
@@ -34,12 +34,12 @@ function TicketCard(props:ITicket_props) {
         <p className="card-text">{children}</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
-        {(dueDate!==undefined)&&(<p className="d-block m-0"><img alt="clock icon" src={clockIcon} width="10" style={{marginBottom:3, marginRight:5}}/>{"Due on "+dueDate.toDateString().slice(0,-5)}</p>)}
+        <TicketDueDate dueDate={dueDate}/>
         </div>
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
             urgency={urgency} title={title} body={children} isDraft={isDraft}
-            isAdmin={isUserAdmin}
+            isAdmin={isUserAdmin} dueDate={dueDate?.toISOString().slice(0,10)}
             tags={()=>{
                 //Convert the ITags[] into string[]
                 const TagsString:string[] = []
@@ -47,31 +47,40 @@ function TicketCard(props:ITicket_props) {
                 return TagsString;
             }}
             person_assigned={person_assigned}
-            actionTicketModal={(isUserAdmin)?(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
-                const ticket_tags:ITags[] = []
-                pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
-                
-                setTickets((pTickets: ITicket[])=>{
-                    const NewTickets = pTickets.map((t, i: number) => {
-                        if (t.id != props.id) return t
-                        console.log("Updating "+i)
-                        const NewTicket =
-                        {id:t.id,
-                            isDone:false, isDraft:pIsDraft, urgency:pUrgency,
-                            title:pName, body:pBody,
-                            tags:ticket_tags,
-                            person_assigned:pActiveDev};
-        
-                        return NewTicket;
-                    });
-        
-                    return NewTickets;
-                    }
-                    
-                )
-              }:completedAction} 
+            actionTicketModal={
+                (isUserAdmin)?editTicketAction(setTickets, props):completedAction} 
         />)}
     </div>)
+}
+
+function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, props: ITicket_props) {
+    return (pName: string, pBody: string, pUrgency: number, pActiveTags: string[], pIsDraft: boolean, pActiveDev: string[], pDueDate: string) => {
+        const ticket_tags: ITags[] = [];
+        pActiveTags.map((t, id) => { ticket_tags.push({ id: id, text: t }); });
+
+        console.log(pDueDate);
+
+        setTickets((pTickets: ITicket[]) => {
+            const NewTickets = pTickets.map((t, i: number) => {
+                if (t.id != props.id) return t;
+                console.log("Updating " + i);
+                const NewTicket: ITicket = {
+                    id: t.id,
+                    isDone: false, isDraft: pIsDraft, urgency: pUrgency,
+                    title: pName, body: pBody,
+                    tags: ticket_tags,
+                    person_assigned: pActiveDev
+                };
+
+                if (pDueDate !== "" && pDueDate !== undefined) NewTicket.dueDate = new Date(pDueDate);
+                return NewTicket;
+            });
+
+            return NewTickets;
+        }
+
+        );
+    };
 }
 
 function CompletedPublishBtn(props){
