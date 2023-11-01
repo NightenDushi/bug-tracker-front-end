@@ -8,7 +8,7 @@ import './Tickets.css'
 import { ITags } from '../@types/tags';
 
 function TicketCard(props:ITicket_props) {
-    const {children, isDone, isDraft, urgency, title, className, tags, person_assigned, completedAction, setTickets} = props;
+    const {children, isDone, isDraft, isUserAdmin, urgency, title, className, tags, person_assigned, dueDate, completedAction, setTickets} = props;
 
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
@@ -36,6 +36,7 @@ function TicketCard(props:ITicket_props) {
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
             urgency={urgency} title={title} body={children} isDraft={isDraft}
+            isAdmin={isUserAdmin}
             tags={()=>{
                 //Convert the ITags[] into string[]
                 const TagsString:string[] = []
@@ -43,16 +44,16 @@ function TicketCard(props:ITicket_props) {
                 return TagsString;
             }}
             person_assigned={person_assigned}
-            actionTicketModal={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
+            actionTicketModal={(isUserAdmin)?(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
                 const ticket_tags:ITags[] = []
                 pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
-
+                
                 setTickets((pTickets: ITicket[])=>{
                     const NewTickets = pTickets.map((t, i: number) => {
                         if (t.id != props.id) return t
                         console.log("Updating "+i)
                         const NewTicket =
-                            {id:t.id,
+                        {id:t.id,
                             isDone:false, isDraft:pIsDraft, urgency:pUrgency,
                             title:pName, body:pBody,
                             tags:ticket_tags,
@@ -65,7 +66,7 @@ function TicketCard(props:ITicket_props) {
                     }
                     
                 )
-              }} 
+              }:completedAction} 
         />)}
     </div>)
 }

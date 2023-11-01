@@ -14,6 +14,7 @@ export type ITicket_props = {
   id:number,
   isDraft:boolean,
   isDone:boolean,
+  isUserAdmin:boolean,
   urgency:number,
   children:string,
   title:string,
@@ -25,5 +26,6 @@ export type ITicket_props = {
 }
 export type ITickets_props = {
   tickets:ITicket[],
+  isUserAdmin:boolean,
   setTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void
 }

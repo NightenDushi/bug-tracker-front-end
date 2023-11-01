@@ -50,7 +50,7 @@ function App() {
                                             showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,
                                             setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft}}>
           <TicketFilter/>
-          <TicketCardWrapper tickets={tickets} setTickets={setTickets}/>
+          <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user_is_admin}/>
         </TicketFilterContext.Provider>
       </div>
       {showNewTicketModal && (
