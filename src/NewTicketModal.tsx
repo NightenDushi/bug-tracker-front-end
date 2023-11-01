@@ -104,7 +104,7 @@ export function NewTicketModal(props: any) {
             <div className="d-flex w-75">
                 <h2 className="modal-title align-self-end">{title}</h2>
                 <div className={"form-control w-25 ms-2"+((urgency==1)?" bg-warning text-white":((urgency==2)?" bg-danger text-white":""))} >
-                    {(urgency==1)?"Urgent":((urgency==2)?"Hurry":"Standard")}
+                    {(urgency==1)?"Hurry":((urgency==2)?"Urgent":"Standard")}
                 </div>
 
             </div>
