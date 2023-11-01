@@ -9,12 +9,14 @@ export function TicketCardWrapper(props: ITickets_props) {
   return (<div className="row">
     {props.tickets.map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
       && (!ticket.isDone || (ticket.isDone && showCompleted)) &&
-      (<TicketCard   key={ticket.id} title={ticket.title} 
+      (<TicketCard   key={ticket.id} id={ticket.id} title={ticket.title} 
                     className={(urgency_map[ticket.urgency]) + (ticket.isDraft ? " draft" : "") + (ticket.isDone ? " done" : "")}
                     tags={ticket.tags} isDraft={ticket.isDraft} isDone={ticket.isDone}
+                    urgency={ticket.urgency}
                     person_assigned={ticket.person_assigned}
                     
                     completedAction={TicketCompletedAction(props, ticket_index)}
+                    setTickets={props.setTickets}
         >{ticket.body}</TicketCard>)
     )}
   </div>);
@@ -22,7 +24,6 @@ export function TicketCardWrapper(props: ITickets_props) {
 function TicketCompletedAction(props: ITickets_props, ticket_index: number): (e: MouseEvent) => void {
     return (e: MouseEvent) => {
         e.preventDefault();
-        console.log(e.type);
         props.setTickets((pTickets: ITicket[]) => {
             const NewTickets = pTickets.map((t, i: number) => {
                 if (i != ticket_index) return t
@@ -35,7 +36,6 @@ function TicketCompletedAction(props: ITickets_props, ticket_index: number): (e:
                 return NewTicket;
             });
 
-            //NOTE(Nathan) We have to deepclone the list so that react can detect the change we made to the inner object
             return NewTickets;
         }
         );

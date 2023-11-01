@@ -1,12 +1,18 @@
+import { useState } from 'react';
+
 import { TicketTags } from './TicketTags.tsx';
-import { ITicket_props } from '../@types/tickets';
+import { ITicket, ITicket_props } from '../@types/tickets';
 import { DevAvailable } from '../const/DevAvailable.tsx';
+import { NewTicketModal } from '../NewTicketModal.tsx';
 import './Tickets.css'
+import { ITags } from '../@types/tags';
 
 function TicketCard(props:ITicket_props) {
+    const {children, isDone, isDraft, urgency, title, className, tags, person_assigned, completedAction, setTickets} = props;
+
+    //TODO(Nathan) Move this to a new file
+    const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
     
-    const {children, title, className, tags, isDraft, isDone, person_assigned, completedAction} = props;
-        
     return (<div className='card col col-sm-6 col-md-4 col-lg-3'>
         <div className={"card-body ticket_card "+className}>
         <div className="d-flex align-items-center justify-content-between">
@@ -18,7 +24,6 @@ function TicketCard(props:ITicket_props) {
                         src={"../public/avatar/"+dev?.image} />
                 })}
           </div>
-            {/* <img className="img rounded-circle shadow" width="40" height="40" src="../public/avatar/31c88339bc905db98016c725dd3d418a.jpeg" /> */}
         </div><ul className="nav d-flex mb-2">
             {tags.map(tag=>
                 <TicketTags key={tag.id} on={true}>{tag.text}</TicketTags>
@@ -26,8 +31,42 @@ function TicketCard(props:ITicket_props) {
         </ul>
         <p className="card-text">{children}</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
-        <a href="#" className="btn btn-primary">More...</a>
+        <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
         </div>
+        {showNewTicketModal&&
+        (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
+            urgency={urgency} title={title} body={children} isDraft={isDraft}
+            tags={()=>{
+                //Convert the ITags[] into string[]
+                const TagsString:string[] = []
+                tags.map((t)=>{TagsString.push(t.text)})
+                return TagsString;
+            }}
+            person_assigned={person_assigned}
+            actionTicketModal={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
+                const ticket_tags:ITags[] = []
+                pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
+
+                setTickets((pTickets: ITicket[])=>{
+                    const NewTickets = pTickets.map((t, i: number) => {
+                        if (t.id != props.id) return t
+                        console.log("Updating "+i)
+                        const NewTicket =
+                            {id:t.id,
+                            isDone:false, isDraft:pIsDraft, urgency:pUrgency,
+                            title:pName, body:pBody,
+                            tags:ticket_tags,
+                            person_assigned:pActiveDev};
+        
+                        return NewTicket;
+                    });
+        
+                    return NewTickets;
+                    }
+                    
+                )
+              }} 
+        />)}
     </div>)
 }
 

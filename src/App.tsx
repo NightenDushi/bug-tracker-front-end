@@ -42,11 +42,8 @@ function App() {
       </UserContext.Provider>
       <div className="container grid">
         <h1>My tickets</h1>
-        {user_is_admin && (<a href="#" className="btn btn-primary mb-3" onClick={
-          ()=>{
-            setShowNewTicketModal(true);
-        }
-        }>
+        {user_is_admin && (<a href="#" className="btn btn-primary mb-3"
+        onClick={()=>{setShowNewTicketModal(true);}}>
           Create a ticket
         </a>)}
         <TicketFilterContext.Provider value={{isAdmin:user_is_admin,
@@ -56,8 +53,9 @@ function App() {
           <TicketCardWrapper tickets={tickets} setTickets={setTickets}/>
         </TicketFilterContext.Provider>
       </div>
-      {showNewTicketModal && (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-        addTicket={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
+      {showNewTicketModal && (
+      <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
+        actionTicketModal={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
           const ticket_tags:ITags[] = []
           pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
           setTickets(

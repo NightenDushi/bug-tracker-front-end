@@ -5,17 +5,17 @@ import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
 
 export function NewTicketModal(props: any) {
-  const [urgency, setUrgency] = useState<number>(0);
-  const [name, setName] = useState<string>("");
-  const [body, setBody] = useState<string>("");
+  const [urgency, setUrgency] = useState<number>(props?.urgency||0);
+  const [title, setTitle] = useState<string>(props?.title||"");
+  const [body, setBody] = useState<string>(props?.body||"");
 
-  const [isDraft, setDraft] = useState<boolean>(true);
+  const [isDraft, setDraft] = useState<boolean>((props.isDraft === undefined) ? true : props.isDraft);
 
-  const [activeTags, setActiveTags] = useState<string[]>([])
-  const [activeDev, setActiveDev] = useState<string[]>([])
+  const [activeTags, setActiveTags] = useState<string[]>(props?.tags||[])
+  const [activeDev, setActiveDev] = useState<string[]>(props?.person_assigned||[])
 
   const addticket = ()=>{
-      props.addTicket(name, body, urgency, activeTags, isDraft, activeDev); props.close();
+      props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev); props.close();
     }
 
   return <div className={"modal d-block"} tabIndex={-1} role="dialog">
@@ -53,11 +53,13 @@ export function NewTicketModal(props: any) {
           </div>
           <label htmlFor="ticket_name">Title</label>
           <input className="form-control" name="ticket_name" id="ticket_name"
-            onChange={(e) => { e.preventDefault(); setName(e.target.value); }}
+            value={title}
+            onChange={(e) => { e.preventDefault(); setTitle(e.target.value); }}
             onKeyDown={(e) => { if (e.key === 'Enter') { addticket() } }}
-          ></input>
+            ></input>
           <label htmlFor="ticket_body">Body</label>
           <textarea className="form-control" name="ticket_body" id="ticket_name"
+            value={body}
             onChange={(e) => { e.preventDefault(); setBody(e.target.value); }}
             onKeyDown={(e) => { if (e.key === 'Enter') { addticket() } }}
           ></textarea>
