@@ -1,7 +1,7 @@
 
 export type TicketFilterType = {
     isAdmin:boolean,
-    showOnlyOwned:boolean,
+    showOnlyOwned:(boolean|string),
     showCompleted:boolean,
     showDraft:boolean,
     sortOrder:("name"|"urgency"|"date"),

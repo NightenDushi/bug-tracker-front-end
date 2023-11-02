@@ -5,7 +5,7 @@ import { TicketFilterContext } from './App.tsx';
 
 export function TicketCardWrapper(props: ITickets_props) {
   const urgency_map: string[] = ["", "hurry", "urgent"];
-  const { isAdmin, showDraft, showCompleted, sortOrder } = useContext(TicketFilterContext);
+  const { isAdmin, showOnlyOwned, showDraft, showCompleted, sortOrder } = useContext(TicketFilterContext);
   return (<div className="row">
     {props.tickets
       .sort((a,b)=>{
@@ -26,7 +26,7 @@ export function TicketCardWrapper(props: ITickets_props) {
             
       })
       .map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
-      && (!ticket.isDone || (ticket.isDone && showCompleted)) &&
+      && (!ticket.isDone || (ticket.isDone && showCompleted)) && (showOnlyOwned==false || ticket.person_assigned.includes(showOnlyOwned as string)) &&
       (<TicketCard   key={ticket.id} id={ticket.id} title={ticket.title} 
                     className={(urgency_map[ticket.urgency]) + (ticket.isDraft ? " draft" : "") + (ticket.isDone ? " done" : "")}
                     tags={ticket.tags} isDraft={ticket.isDraft} isDone={ticket.isDone}
