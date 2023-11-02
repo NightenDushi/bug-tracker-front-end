@@ -5,9 +5,27 @@ import { TicketFilterContext } from './App.tsx';
 
 export function TicketCardWrapper(props: ITickets_props) {
   const urgency_map: string[] = ["", "hurry", "urgent"];
-  const { isAdmin, showDraft, showCompleted } = useContext(TicketFilterContext); //TODO:Switch that option to the context API later on
+  const { isAdmin, showDraft, showCompleted, sortOrder } = useContext(TicketFilterContext);
   return (<div className="row">
-    {props.tickets.map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
+    {props.tickets
+      .sort((a,b)=>{
+        switch(sortOrder){
+          case "name":
+            if (a.title < b.title) return -1
+            break;
+          case "urgency":
+            if (a.urgency > b.urgency) return -1
+            break;
+          case "date":
+              if (a.dueDate===undefined) return 1
+              if (b.dueDate===undefined) return -1
+              if (a.dueDate < b.dueDate) return -1
+              break;
+            }
+        return 1
+            
+      })
+      .map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
       && (!ticket.isDone || (ticket.isDone && showCompleted)) &&
       (<TicketCard   key={ticket.id} id={ticket.id} title={ticket.title} 
                     className={(urgency_map[ticket.urgency]) + (ticket.isDraft ? " draft" : "") + (ticket.isDone ? " done" : "")}

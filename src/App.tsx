@@ -14,7 +14,7 @@ import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
 
 export const UserContext = createContext<UserType>({name:"foo", isAdmin:true, setAdmin:(value:boolean)=>{}});
-export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:false,showCompleted:false,showDraft:false,setOnlyOwned:(value:boolean)=>{}, setCompleted:(value:boolean)=>{}, setDraft:(value:boolean)=>{}});
+export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:false,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(value:boolean)=>{}, setCompleted:(value:boolean)=>{}, setDraft:(value:boolean)=>{}, setSortOrder:(value:("name"|"urgency"|"date"))=>{}});
 
 function App() {
   const initial_tickets:ITicket[] = [
@@ -32,6 +32,8 @@ function App() {
   const [showOnlyOwned, setOwned] = useState<boolean>(false);
   const [showCompleted, setCompleted] = useState<boolean>(false);
   const [showDraft, setDraft] = useState<boolean>(false);
+  
+  const [sortOrder, setSortOrder] = useState<("name"|"urgency"|"date")>("name");
 
   const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
 
@@ -47,8 +49,8 @@ function App() {
           Create a ticket
         </a>)}
         <TicketFilterContext.Provider value={{isAdmin:user_is_admin,
-                                            showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,
-                                            setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft}}>
+                                            showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,sortOrder:sortOrder,
+                                            setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft, setSortOrder:setSortOrder}}>
           <TicketFilter/>
           <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user_is_admin}/>
         </TicketFilterContext.Provider>
