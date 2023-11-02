@@ -13,8 +13,8 @@ import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
 
-export const UserContext = createContext<UserType>({name:"foo", isAdmin:true, setAdmin:(value:boolean)=>{}});
-export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:false,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(value:boolean)=>{}, setCompleted:(value:boolean)=>{}, setDraft:(value:boolean)=>{}, setSortOrder:(value:("name"|"urgency"|"date"))=>{}});
+export const UserContext = createContext<UserType>({name:"foo", isAdmin:true, setAdmin:(_value:boolean)=>{}});
+export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:false,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(_value:boolean)=>{}, setCompleted:(_value:boolean)=>{}, setDraft:(_value:boolean)=>{}, setSortOrder:(_value:("name"|"urgency"|"date"))=>{}});
 
 function App() {
   const initial_tickets:ITicket[] = [
