@@ -6,8 +6,8 @@ import { DevAvailable } from '../const/DevAvailable.tsx';
 import { NewTicketModal } from '../NewTicketModal.tsx';
 import './Tickets.css'
 import { ITags } from '../@types/tags';
-
 import { TicketDueDate } from './TicketDueDate.tsx';
+import { DevAvatar } from '../DevAvatar.tsx';
 
 function TicketCard(props:ITicket_props) {
     const {children, isDone, isDraft, isUserAdmin, urgency, title, className, tags, person_assigned, dueDate, completedAction, setTickets} = props;
@@ -22,8 +22,7 @@ function TicketCard(props:ITicket_props) {
             <div>
               {person_assigned.map((dev_name)=>{
                     const dev = DevAvailable.find((e)=> e.name == dev_name)
-                    return <img key={dev?.name} className={"img rounded-circle shadow me-2"} width="40" height="40"
-                        src={"../public/avatar/"+dev?.image} />
+                    return <DevAvatar key={dev?.name} image={dev?.image} activated={true} />
                 })}
           </div>
         </div><ul className="nav d-flex mb-2">

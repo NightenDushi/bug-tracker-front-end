@@ -4,6 +4,7 @@ import { TicketTags } from './Tickets/TicketTags.tsx';
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
+import { DevAvatar } from './DevAvatar.tsx';
 
 export function NewTicketModal(props: any) {
   const isAdmin = (props.isAdmin === undefined) ? true : props.isAdmin;
@@ -52,8 +53,7 @@ export function NewTicketModal(props: any) {
                                 if (!dev_activated) return [...pDev, dev.name]
                                 else return pDev.filter((e) => { return e !== dev.name })     
                                 })}}>
-                                <img className={"img rounded-circle shadow me-2 "+(dev_activated?"":"opacity-25")} width="40" height="40"
-                                    src={"../public/avatar/"+dev.image} />
+                                <DevAvatar key={dev.name} image={dev.image} activated={dev_activated} deactivatedClass="opacity-25" />
                             </a>
                 })}
           </div>
@@ -126,10 +126,7 @@ export function NewTicketModal(props: any) {
           <div>
               {DevAvailable.map((dev)=>{
                   const dev_activated = (activeDev.includes(dev.name));
-                  return    <span key={dev.name}>
-                                <img className={"img rounded-circle shadow me-2 "+(dev_activated?"":"d-none")} width="40" height="40"
-                                    src={"../public/avatar/"+dev.image} />
-                            </span>
+                  return <DevAvatar key={dev.name} image={dev.image} activated={dev_activated} deactivatedClass="d-none"/>
                 })}
           </div>
           <p className="mt-2">{body}</p>
