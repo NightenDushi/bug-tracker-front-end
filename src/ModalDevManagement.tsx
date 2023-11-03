@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DevAvailable, AddDev, RemoveDev } from './const/DevAvailable.tsx';
+import { DevAvailable, AddDev, RemoveDev, RenameDev } from './const/DevAvailable.tsx';
 
 import { AlertModal } from './AlertModal.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
@@ -53,7 +53,9 @@ export function ModalDevManagement(props) {
                             <DevAvatar dev={dev} />
                             <input className="form-control ms-2"
                                 value={devNameCapitalized}
-                                onChange={() => { }}></input>
+                                onChange={(e) => {RenameDev(dev.id, e.target.value, setDevAvailableState)}}
+                                onKeyDown={(e) => { if (e.key === 'Enter') { props.close() } }}>
+                            </input>
                             {(dev.id!==props.user_id) && 
                             (<a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
                             onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}

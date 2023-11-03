@@ -18,7 +18,10 @@ export default function LoggedNavBar(props){
             <a className="nav-link" href="#">Logout</a>
             {
                 props.isAdmin &&
-                (<a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>)
+                (<>
+                    <a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>
+                    <a className="nav-link" href="#" onClick={()=>{}} >Manage tags</a>
+                </>)
             }
             <div className="nav-link ms-auto position-relative">
                 <a className="" href="#" onClick={()=>{setShowChangeAccount(!showChangeAccount)}}>

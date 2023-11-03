@@ -1,6 +1,8 @@
 let dev_id_increment = 0;
 
-export let DevAvailable: { id:number, name: string; image: string; isAdmin:boolean }[] = [];
+export type DevType = { id:number, name: string; image: string; isAdmin:boolean }
+
+export let DevAvailable: DevType[] = [];
 
 AddDev("nathan", "31c88339bc905db98016c725dd3d418a.jpeg", ()=>{}, true)
 AddDev("tim", "03.41881874.webp", ()=>{})
@@ -13,5 +15,12 @@ export function AddDev(pName:string, pImage:string, pCallBack, pAdmin=false){
 }
 export function RemoveDev(pId:number, pCallBack){
     DevAvailable = DevAvailable.filter((d)=>d.id !== pId)
+    pCallBack(DevAvailable)
+}
+export function RenameDev(pDevId:number, pNewName:string, pCallBack:(prevVar: (DevType[] | ((a:DevType[])=>DevType[]))) => void){
+    DevAvailable = DevAvailable.map((d)=>{
+        if (d.id===pDevId) d.name = pNewName;
+        return d
+    })
     pCallBack(DevAvailable)
 }
