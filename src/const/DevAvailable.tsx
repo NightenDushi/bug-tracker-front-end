@@ -13,13 +13,20 @@ export function AddDev(pName:string, pImage:string, pCallBack, pAdmin=false){
     dev_id_increment += 1;
     pCallBack(DevAvailable)
 }
-export function RemoveDev(pId:number, pCallBack){
-    DevAvailable = DevAvailable.filter((d)=>d.id !== pId)
+export function RemoveDev(pDevId:number, pCallBack){
+    DevAvailable = DevAvailable.filter((d)=>d.id !== pDevId)
     pCallBack(DevAvailable)
 }
 export function RenameDev(pDevId:number, pNewName:string, pCallBack:(prevVar: (DevType[] | ((a:DevType[])=>DevType[]))) => void){
     DevAvailable = DevAvailable.map((d)=>{
         if (d.id===pDevId) d.name = pNewName;
+        return d
+    })
+    pCallBack(DevAvailable)
+}
+export function SetAdminDev(pDevId:number, pNewAdminValue:boolean, pCallBack){
+    DevAvailable = DevAvailable.map((d)=>{
+        if (d.id===pDevId) d.isAdmin = pNewAdminValue;
         return d
     })
     pCallBack(DevAvailable)

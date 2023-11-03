@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DevAvailable, AddDev, RemoveDev, RenameDev } from './const/DevAvailable.tsx';
+import { DevAvailable, AddDev, RemoveDev, RenameDev, SetAdminDev } from './const/DevAvailable.tsx';
 
 import { AlertModal } from './AlertModal.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
@@ -56,10 +56,17 @@ export function ModalDevManagement(props) {
                                 onChange={(e) => {RenameDev(dev.id, e.target.value, setDevAvailableState)}}
                                 onKeyDown={(e) => { if (e.key === 'Enter') { props.close() } }}>
                             </input>
+                            
                             {(dev.id!==props.user_id) && 
-                            (<a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
-                            onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}
-                                            else RemoveDev(dev.id, setDevAvailableState)}}> Remove </a>)}
+                            (<>
+                                <div className="d-flex ms-2 align-self-end">
+                                    <label htmlFor={"admin_"+dev.id} className="">Admin</label>
+                                    <input id={"admin_"+dev.id} className="form-check-input ms-1 me-2" type="checkbox" checked={dev.isAdmin} onChange={()=>{SetAdminDev(dev.id, !dev.isAdmin, setDevAvailableState)}}></input>
+                                </div>
+                                <a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
+                                onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}
+                                            else RemoveDev(dev.id, setDevAvailableState)}}> Remove </a>
+                            </>)}
                         </div>;
                     })}
                     <a href="#" className="btn btn-light d-flex
