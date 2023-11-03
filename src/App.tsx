@@ -23,11 +23,11 @@ export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:fals
 
 function App() {
   const initial_tickets:ITicket[] = [
-    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[0],dueDate:new Date("2023-11-01")},
-    {id:2,isDone:false, isDraft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[1]},
-    {id:3,isDone:true, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[0]},
-    {id:4,isDone:false, isDraft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[2]},
-    {id:5,isDone:false, isDraft:true, urgency:0, title:"World", body:"I wish I had internet", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[1]}
+    {id:1,isDone:false, isDraft:false, urgency:1, title:"Bug on the front page", body:"This is a test", tags:[TagsAvailable[0],TagsAvailable[1]],person_assigned:[0],dueDate:new Date("2023-11-01")},
+    {id:2,isDone:false, isDraft:false, urgency:0, title:"Bad performance when reloading", body:"This is a test", tags:[TagsAvailable[0]],person_assigned:[1]},
+    {id:3,isDone:true, isDraft:false, urgency:1, title:"Test not passing", body:"This is a test", tags:[TagsAvailable[0],TagsAvailable[1]],person_assigned:[0]},
+    {id:4,isDone:false, isDraft:false, urgency:2, title:"UI qwirks", body:"This is a test", tags:[TagsAvailable[0],TagsAvailable[1]],person_assigned:[2]},
+    {id:5,isDone:false, isDraft:true, urgency:0, title:"Connection to database failed", body:"I wish I had internet", tags:[TagsAvailable[0],TagsAvailable[1]],person_assigned:[1]}
   ]
   const [tickets, setTickets] = useState<ITicket[]>(initial_tickets);
   
