@@ -9,19 +9,19 @@ import plusIcon from './assets/plus-solid.svg';
 
 const defaultAvatar = 'defaultAvatar.jpg';
 
-function userInTickets(pTickets:ITicket[], pUser:string){
+function userInTickets(pTickets:ITicket[], pUserId:number){
     for (let i=0; i<pTickets.length; i++){
-        if (pTickets[i].person_assigned.includes(pUser)) return true
+        if (pTickets[i].person_assigned.includes(pUserId)) return true
     }
     return false
 }
 
-function RemoveDevFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void, pDevName:string){
+function RemoveDevFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void, pDevId:number){
     pSetTickets((pTickets:ITicket[])=>{
         const newTickets = pTickets.map((t)=>{
             const new_t:ITicket = Object.assign({}, t);
-            if (new_t.person_assigned.includes(pDevName)){
-                const removedDevIndex = new_t.person_assigned.indexOf(pDevName)
+            if (new_t.person_assigned.includes(pDevId)){
+                const removedDevIndex = new_t.person_assigned.indexOf(pDevId)
                 new_t.person_assigned.splice(removedDevIndex, 1);
             }
 
@@ -55,7 +55,7 @@ export function ModalDevManagement(props) {
                                 value={devNameCapitalized}
                                 onChange={() => { }}></input>
                             <a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
-                            onClick={() => {if(userInTickets(props.tickets, dev.name)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)} else RemoveDev(dev.id, setDevAvailableState)}} >Remove</a>
+                            onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)} else RemoveDev(dev.id, setDevAvailableState)}} >Remove</a>
                         </div>;
                     })}
                     <a href="#" className="btn btn-light d-flex
@@ -75,7 +75,7 @@ export function ModalDevManagement(props) {
             close={()=>{setShowAlertModal(false)}} 
             ok={()=>{
                 RemoveDev(alertModalSubjectId, setDevAvailableState);
-                RemoveDevFromTickets(props.setTickets, alertModalSubject.toLowerCase())
+                RemoveDevFromTickets(props.setTickets, alertModalSubjectId)
                 setShowAlertModal(false);
             }}
         />)}

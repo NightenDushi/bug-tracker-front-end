@@ -7,7 +7,7 @@ export function TicketFilter(props) {
   return <ul className="nav bg-clear shadow mb-3 rounded-2 p-3 align-items-center">
     <li className="nav-item me-3">
       <label className="me-1" htmlFor="owned">Show only my issues</label>
-      <input type="checkbox" className="form-check-input" id="owned" name="owned" checked={(showOnlyOwned !== false)} onChange={() => { if (showOnlyOwned==false) {setOnlyOwned(props.username)} else setOnlyOwned(false) }}></input>
+      <input type="checkbox" className="form-check-input" id="owned" name="owned" checked={(showOnlyOwned !== -1)} onChange={() => { if (showOnlyOwned==-1) {setOnlyOwned(props.user_id)} else setOnlyOwned(-1) }}></input>
     </li>
     {isAdmin && (<li className="nav-item me-3">
       <label className="me-1" htmlFor="draft">Show Drafts</label>

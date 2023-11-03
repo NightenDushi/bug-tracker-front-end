@@ -16,7 +16,7 @@ export function NewTicketModal(props: any) {
   const [isDraft, setDraft] = useState<boolean>((props.isDraft === undefined) ? true : props.isDraft);
 
   const [activeTags, setActiveTags] = useState<string[]>(props?.tags||[])
-  const [activeDev, setActiveDev] = useState<string[]>(props?.person_assigned||[])
+  const [activeDev, setActiveDev] = useState<number[]>(props?.person_assigned||[])
   
   const [dueDate, setDueDate] = useState<string>(props?.dueDate||"")
 
@@ -47,11 +47,11 @@ export function NewTicketModal(props: any) {
           <label>Developers</label>
           <div>
               {DevAvailable.map((dev)=>{
-                  const dev_activated = (activeDev.includes(dev.name));
+                  const dev_activated = (activeDev.includes(dev.id));
                   return    <a key={dev.id} href="#" onClick={()=>{setActiveDev((pDev)=>{
                                 //Add or remove the tag from the active tag array
-                                if (!dev_activated) return [...pDev, dev.name]
-                                else return pDev.filter((e) => { return e !== dev.name })     
+                                if (!dev_activated) return [...pDev, dev.id]
+                                else return pDev.filter((e) => { return e !== dev.id })     
                                 })}}>
                                 <DevAvatar image={dev.image} activated={dev_activated} deactivatedClass="opacity-25" />
                             </a>
@@ -125,7 +125,7 @@ export function NewTicketModal(props: any) {
           <label>Developers</label>
           <div>
               {DevAvailable.map((dev)=>{
-                  const dev_activated = (activeDev.includes(dev.name));
+                  const dev_activated = (activeDev.includes(dev.id));
                   return <DevAvatar key={dev.name} image={dev.image} activated={dev_activated} deactivatedClass="d-none"/>
                 })}
           </div>

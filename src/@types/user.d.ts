@@ -1,7 +1,7 @@
 // User
 
 export type UserType = {
-    name:string,
+    id:number,
     isAdmin:boolean,
     setAdmin(value:bool): void
 };

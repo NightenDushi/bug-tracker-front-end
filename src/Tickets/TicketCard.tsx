@@ -20,8 +20,8 @@ function TicketCard(props:ITicket_props) {
         <div className="d-flex align-items-center justify-content-between">
             <h5 className="card-title">{title}</h5>
             <div>
-              {person_assigned.map((dev_name)=>{
-                    const dev = DevAvailable.find((e)=> e.name == dev_name)
+              {person_assigned.map((dev_id)=>{
+                    const dev = DevAvailable.find((e)=> e.id == dev_id)
                     return <DevAvatar key={dev?.id} image={dev?.image} activated={true} />
                 })}
           </div>
@@ -53,7 +53,7 @@ function TicketCard(props:ITicket_props) {
 }
 
 function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, props: ITicket_props) {
-    return (pName: string, pBody: string, pUrgency: number, pActiveTags: string[], pIsDraft: boolean, pActiveDev: string[], pDueDate: string) => {
+    return (pName: string, pBody: string, pUrgency: number, pActiveTags: string[], pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
         const ticket_tags: ITags[] = [];
         pActiveTags.map((t, id) => { ticket_tags.push({ id: id, text: t }); });
 

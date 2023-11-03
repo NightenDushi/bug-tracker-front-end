@@ -14,23 +14,24 @@ import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
 
-export const UserContext = createContext<UserType>({name:"nathan", isAdmin:true, setAdmin:(_value:boolean)=>{}});
-export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:false,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(_value:boolean)=>{}, setCompleted:(_value:boolean)=>{}, setDraft:(_value:boolean)=>{}, setSortOrder:(_value:("name"|"urgency"|"date"))=>{}});
+export const UserContext = createContext<UserType>({id:0, isAdmin:true, setAdmin:(_value:boolean)=>{}});
+export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:-1,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(_value:number)=>{}, setCompleted:(_value:boolean)=>{}, setDraft:(_value:boolean)=>{}, setSortOrder:(_value:("name"|"urgency"|"date"))=>{}});
 
 function App() {
   const initial_tickets:ITicket[] = [
-    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"],dueDate:new Date("2023-11-01")},
-    {id:2,isDone:false, isDraft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["tim"]},
-    {id:3,isDone:true, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]},
-    {id:4,isDone:false, isDraft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["oliwia"]},
-    {id:5,isDone:false, isDraft:true, urgency:0, title:"World", body:"I wish I had internet", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:["nathan"]}
+    {id:1,isDone:false, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[0],dueDate:new Date("2023-11-01")},
+    {id:2,isDone:false, isDraft:false, urgency:0, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[1]},
+    {id:3,isDone:true, isDraft:false, urgency:1, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[0]},
+    {id:4,isDone:false, isDraft:false, urgency:2, title:"Hello", body:"This is a test", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[2]},
+    {id:5,isDone:false, isDraft:true, urgency:0, title:"World", body:"I wish I had internet", tags:[{id:1, text:"foo"},{id:2,text:"bar"}],person_assigned:[1]}
   ]
   const [tickets, setTickets] = useState<ITicket[]>(initial_tickets);
   
-  const [user_is_admin, SetUserAdmin] = useState<boolean>(true);
-  const [user_name, SetName] = useState<string>("nathan");
+  const [user_is_admin, setUserAdmin] = useState<boolean>(true);
+  const [user_id, setUserId] = useState<number>(0);
+  // const [user_name, SetName] = useState<string>("nathan");
   
-  const [showOnlyOwned, setOwned] = useState<(boolean|string)>(false);
+  const [showOnlyOwned, setOwned] = useState<number>(-1);
   const [showCompleted, setCompleted] = useState<boolean>(false);
   const [showDraft, setDraft] = useState<boolean>(false);
   
@@ -41,7 +42,7 @@ function App() {
 
   return (
     <>
-      <UserContext.Provider value={{name:user_name, isAdmin:user_is_admin, setAdmin:SetUserAdmin}}>
+      <UserContext.Provider value={{id:user_id, isAdmin:user_is_admin, setAdmin:setUserAdmin}}>
         <LoggedNavBar setShowModalDev={()=>{setShowModalDev(true)}} />
       </UserContext.Provider>
       <div className="container grid">
@@ -53,7 +54,7 @@ function App() {
         <TicketFilterContext.Provider value={{isAdmin:user_is_admin,
                                             showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,sortOrder:sortOrder,
                                             setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft, setSortOrder:setSortOrder}}>
-          <TicketFilter username={user_name}/>
+          <TicketFilter user_id={user_id}/>
           <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user_is_admin}/>
         </TicketFilterContext.Provider>
       </div>
@@ -63,7 +64,7 @@ function App() {
       {showNewTicketModal && (
       <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
         actionTicketModal={
-        (pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
+        (pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:number[])=>{
           const ticket_tags:ITags[] = []
           pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
           setTickets(

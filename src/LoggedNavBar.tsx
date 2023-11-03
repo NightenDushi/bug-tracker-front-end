@@ -5,9 +5,9 @@ import { DevAvatar } from './DevAvatar.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 
 export default function LoggedNavBar(props){
-    const {isAdmin, setAdmin} = useContext(UserContext);
+    const {isAdmin, setAdmin, id} = useContext(UserContext);
 
-    const UserLogged = DevAvailable.find((e)=>e.name == "nathan");
+    const UserLogged = DevAvailable.find((e)=>e.id == id);
 
     return(
         <nav className="nav bg-light shadow mb-3 align-items-center">
