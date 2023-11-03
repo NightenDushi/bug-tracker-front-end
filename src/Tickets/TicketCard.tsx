@@ -22,7 +22,7 @@ function TicketCard(props:ITicket_props) {
             <div>
               {person_assigned.map((dev_id)=>{
                     const dev = DevAvailable.find((e)=> e.id == dev_id)
-                    return <DevAvatar key={dev?.id} image={dev?.image} activated={true} />
+                    return <DevAvatar key={dev?.id} dev={dev} activated={true} />
                 })}
           </div>
         </div><ul className="nav d-flex mb-2">

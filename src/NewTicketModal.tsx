@@ -48,12 +48,12 @@ export function NewTicketModal(props: any) {
           <div>
               {DevAvailable.map((dev)=>{
                   const dev_activated = (activeDev.includes(dev.id));
-                  return    <a key={dev.id} href="#" onClick={()=>{setActiveDev((pDev)=>{
+                  return    <a className="me-2" key={dev.id} href="#" onClick={()=>{setActiveDev((pDev)=>{
                                 //Add or remove the tag from the active tag array
                                 if (!dev_activated) return [...pDev, dev.id]
                                 else return pDev.filter((e) => { return e !== dev.id })     
                                 })}}>
-                                <DevAvatar image={dev.image} activated={dev_activated} deactivatedClass="opacity-25" />
+                                <DevAvatar dev={dev} activated={dev_activated} deactivatedClass="opacity-25" />
                             </a>
                 })}
           </div>
@@ -126,7 +126,7 @@ export function NewTicketModal(props: any) {
           <div>
               {DevAvailable.map((dev)=>{
                   const dev_activated = (activeDev.includes(dev.id));
-                  return <DevAvatar key={dev.name} image={dev.image} activated={dev_activated} deactivatedClass="d-none"/>
+                  return <DevAvatar key={dev.name} dev={dev} activated={dev_activated} deactivatedClass="d-none"/>
                 })}
           </div>
           <p className="mt-2">{body}</p>

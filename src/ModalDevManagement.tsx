@@ -50,19 +50,21 @@ export function ModalDevManagement(props) {
                     {devAvailableState.map((dev) => {
                         const devNameCapitalized = dev.name.slice(0, 1).toUpperCase() + dev.name.slice(1);
                         return <div key={dev.id} className="d-flex mb-2">
-                            <DevAvatar image={dev.image} />
+                            <DevAvatar dev={dev} />
                             <input className="form-control ms-2"
                                 value={devNameCapitalized}
                                 onChange={() => { }}></input>
-                            <a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
-                            onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)} else RemoveDev(dev.id, setDevAvailableState)}} >Remove</a>
+                            {(dev.id!==props.user_id) && 
+                            (<a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
+                            onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}
+                                            else RemoveDev(dev.id, setDevAvailableState)}}> Remove </a>)}
                         </div>;
                     })}
                     <a href="#" className="btn btn-light d-flex
                                 mb-2 mt-3 text-decoration-none opacity-50"
                         onClick={() => {AddDev("", defaultAvatar, setDevAvailableState)}}
                     >
-                        <DevAvatar image={plusIcon} avatarFolder={false} />
+                        <DevAvatar dev={{image:plusIcon}} avatarFolder={false} />
                         <span className="h4 align-self-center mb-0">Add a new user</span>
                     </a>
                 </div>

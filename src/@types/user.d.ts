@@ -2,6 +2,5 @@
 
 export type UserType = {
     id:number,
-    isAdmin:boolean,
-    setAdmin(value:bool): void
+    setId:(_value:number)=>void
 };

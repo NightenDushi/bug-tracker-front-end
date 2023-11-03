@@ -1,11 +1,12 @@
 import { UserContext } from './App.tsx';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 import { DevAvatar } from './DevAvatar.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 
 export default function LoggedNavBar(props){
-    const {isAdmin, setAdmin, id} = useContext(UserContext);
+    const {id, setId} = useContext(UserContext);
+    const [showChangeAccount,setShowChangeAccount] = useState<boolean>(false)
 
     const UserLogged = DevAvailable.find((e)=>e.id == id);
 
@@ -16,16 +17,33 @@ export default function LoggedNavBar(props){
             <a className="nav-link" href="#">Notification</a>
             <a className="nav-link" href="#">Logout</a>
             {
-                isAdmin?
-                (<>
-                    <a className="nav-link" href="#" onClick={()=>{setAdmin(false)}}>Switch to dev</a>
-                    <a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>
-                </>)
-                :(<a className="nav-link" href="#" onClick={()=>{setAdmin(true)}}>Switch to admin</a>)
+                props.isAdmin &&
+                (<a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>)
             }
-            <a className="nav-link ms-auto" href="#">
-                <DevAvatar image={UserLogged?.image}/>
-            </a>
+            <div className="nav-link ms-auto position-relative">
+                <a className="" href="#" onClick={()=>{setShowChangeAccount(!showChangeAccount)}}>
+                    <DevAvatar dev={UserLogged}/>
+                </a>
+                {showChangeAccount && (<ModalChangeAccount currentAccount={UserLogged} id={id} close={()=>{setShowChangeAccount(false)}} change={setId}/>)}
+            </div>
         </nav>
     )
+}
+
+function ModalChangeAccount(props){
+    return <div className="position-absolute bg-light p-3 pb-2 pt-2 end-0 top-0 shadow rounded-pill" style={{}}>
+        <a className="d-block mb-2" href="#" onClick={props.close}>
+            <DevAvatar dev={props.currentAccount}/>
+        </a>
+        {DevAvailable.map((dev)=>{
+            const dev_activated = (dev.id!=props.id);
+            return <a key={dev.id} className={"d-block mb-2 "+(dev_activated?"":"d-none")} href="#"
+                onClick={()=>{
+                    props.change(dev.id); props.close()
+                }}
+                >
+                    <DevAvatar key={dev.name} dev={dev}/>
+                </a>
+        })}
+    </div>
 }
