@@ -85,8 +85,8 @@ export function ModalDevManagement(props) {
         {showAlertModal && (<AlertModal title={"Warning"} body={alertModalSubject+" is assigned to one or more tickets. Are you sure you want to remove this user?"}
             close={()=>{setShowAlertModal(false)}} 
             ok={()=>{
-                RemoveDev(alertModalSubjectId, setDevAvailableState);
                 RemoveDevFromTickets(props.setTickets, alertModalSubjectId)
+                RemoveDev(alertModalSubjectId, setDevAvailableState);
                 setShowAlertModal(false);
             }}
         />)}

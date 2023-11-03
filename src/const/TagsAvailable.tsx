@@ -1,3 +1,4 @@
-export const TagsAvailable: string[] = [
-    "foo", "bar"
-];
+export const TagsAvailable: { [key: string]: string; } = {
+    "foo": "primary",
+    "bar": "warning"
+}

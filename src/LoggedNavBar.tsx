@@ -20,7 +20,7 @@ export default function LoggedNavBar(props){
                 props.isAdmin &&
                 (<>
                     <a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>
-                    <a className="nav-link" href="#" onClick={()=>{}} >Manage tags</a>
+                    <a className="nav-link" href="#" onClick={props.setShowModalTag} >Manage tags</a>
                 </>)
             }
             <div className="nav-link ms-auto position-relative">

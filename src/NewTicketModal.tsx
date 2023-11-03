@@ -73,7 +73,7 @@ export function NewTicketModal(props: any) {
 
         <div className="container d-flex justify-content-between">
         <ul className="d-flex list-unstyled">
-            {TagsAvailable.map((tag)=>
+            {Object.keys(TagsAvailable).map((tag)=>
                 <a href="#" className="text-decoration-none"
                 onClick={()=>{setActiveTags((pTags)=>{
                     //Add or remove the tag from the active tag array
@@ -134,7 +134,7 @@ export function NewTicketModal(props: any) {
 
         <div className="container d-flex justify-content-between">
             <ul className="d-flex list-unstyled">
-                {TagsAvailable.map((tag)=>
+                {Object.keys(TagsAvailable).map((tag)=>
                     <span className={"text-decoration-none"+(activeTags.includes(tag)?"":" d-none")} key={tag}>
                         <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
                     </span>

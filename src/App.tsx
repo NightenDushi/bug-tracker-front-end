@@ -10,6 +10,7 @@ import './App.css'
 import LoggedNavBar from './LoggedNavBar.tsx'
 import { NewTicketModal } from './NewTicketModal.tsx';
 import { ModalDevManagement } from './ModalDevManagement.tsx';
+import { ModalTagManagement } from './ModalTagManagement.tsx';
 import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
@@ -40,11 +41,12 @@ function App() {
 
   const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
   const [showModalDev, setShowModalDev] = useState<boolean>(false);
+  const [showModalTag, setShowModalTag] = useState<boolean>(false);
 
   return (
     <>
       <UserContext.Provider value={{id:user_id, setId:setUserId}}>
-        <LoggedNavBar isAdmin={user.isAdmin} setShowModalDev={()=>{setShowModalDev(true)}} />
+        <LoggedNavBar isAdmin={user.isAdmin} setShowModalDev={()=>{setShowModalDev(true)}} setShowModalTag={()=>{setShowModalTag(true)}} />
       </UserContext.Provider>
       <div className="container grid">
         <h1>My tickets</h1>
@@ -79,6 +81,9 @@ function App() {
             )
         }}
         />)}
+        {showModalTag && (
+          <ModalTagManagement close={()=>{setShowModalTag(false)}}/>
+        )}
     </>
   )
 
