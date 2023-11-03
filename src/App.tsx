@@ -9,6 +9,7 @@ import { TicketFilterType } from './@types/ticketfilter'
 import './App.css'
 import LoggedNavBar from './LoggedNavBar.tsx'
 import { NewTicketModal } from './NewTicketModal.tsx';
+import { ModalDevManagement } from './ModalDevManagement.tsx';
 import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
@@ -36,11 +37,12 @@ function App() {
   const [sortOrder, setSortOrder] = useState<("name"|"urgency"|"date")>("name");
 
   const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
+  const [showModalDev, setShowModalDev] = useState<boolean>(false);
 
   return (
     <>
       <UserContext.Provider value={{name:user_name, isAdmin:user_is_admin, setAdmin:SetUserAdmin}}>
-        <LoggedNavBar />
+        <LoggedNavBar setShowModalDev={()=>{setShowModalDev(true)}} />
       </UserContext.Provider>
       <div className="container grid">
         <h1>My tickets</h1>
@@ -55,9 +57,13 @@ function App() {
           <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user_is_admin}/>
         </TicketFilterContext.Provider>
       </div>
+      {showModalDev && (
+      <ModalDevManagement close={()=>{setShowModalDev(false)}} tickets={tickets} setTickets={setTickets} />)}
+      
       {showNewTicketModal && (
       <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-        actionTicketModal={(pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
+        actionTicketModal={
+        (pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:string[])=>{
           const ticket_tags:ITags[] = []
           pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
           setTickets(
@@ -69,7 +75,8 @@ function App() {
                               person_assigned:pActiveDev}
               ]
             )
-        }} />)}
+        }}
+        />)}
     </>
   )
 

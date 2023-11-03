@@ -48,12 +48,12 @@ export function NewTicketModal(props: any) {
           <div>
               {DevAvailable.map((dev)=>{
                   const dev_activated = (activeDev.includes(dev.name));
-                  return    <a key={dev.name} href="#" onClick={()=>{setActiveDev((pDev)=>{
+                  return    <a key={dev.id} href="#" onClick={()=>{setActiveDev((pDev)=>{
                                 //Add or remove the tag from the active tag array
                                 if (!dev_activated) return [...pDev, dev.name]
                                 else return pDev.filter((e) => { return e !== dev.name })     
                                 })}}>
-                                <DevAvatar key={dev.name} image={dev.image} activated={dev_activated} deactivatedClass="opacity-25" />
+                                <DevAvatar image={dev.image} activated={dev_activated} deactivatedClass="opacity-25" />
                             </a>
                 })}
           </div>

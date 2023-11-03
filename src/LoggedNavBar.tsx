@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { DevAvatar } from './DevAvatar.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 
-export default function LoggedNavBar(){
+export default function LoggedNavBar(props){
     const {isAdmin, setAdmin} = useContext(UserContext);
 
     const UserLogged = DevAvailable.find((e)=>e.name == "nathan");
@@ -17,12 +17,12 @@ export default function LoggedNavBar(){
             <a className="nav-link" href="#">Logout</a>
             {
                 isAdmin?
-                (<a className="nav-link" href="#" onClick={()=>{console.log(isAdmin);setAdmin(false)}}>Switch to dev</a>)
-                :(<a className="nav-link" href="#" onClick={()=>{console.log(isAdmin);setAdmin(true)}}>Switch to admin</a>)
-                
+                (<>
+                    <a className="nav-link" href="#" onClick={()=>{setAdmin(false)}}>Switch to dev</a>
+                    <a className="nav-link" href="#" onClick={props.setShowModalDev} >Manage developers</a>
+                </>)
+                :(<a className="nav-link" href="#" onClick={()=>{setAdmin(true)}}>Switch to admin</a>)
             }
-
-            
             <a className="nav-link ms-auto" href="#">
                 <DevAvatar image={UserLogged?.image}/>
             </a>
