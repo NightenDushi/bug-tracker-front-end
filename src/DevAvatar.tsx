@@ -6,7 +6,7 @@ export function DevAvatar(pProps){
     const activated = (props.activated===undefined)?true:props.activated;
     return (
     <>
-    <span className={"position-relative d-inline-block "+(activated?"":props.deactivatedClass)} style={{width:40, height:40}}>
+    <span className={"position-relative d-inline-block devavatar "+(activated?"":props.deactivatedClass)} style={{width:40, height:40}}>
         <img className={"img rounded-circle shadow"} width="40" height="40"
         src={(useAvatarFolder?"/avatar/":"")+dev.image} />
         {//Crown icon for the admin
