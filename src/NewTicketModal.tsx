@@ -15,7 +15,7 @@ export function NewTicketModal(props: any) {
 
   const [isDraft, setDraft] = useState<boolean>((props.isDraft === undefined) ? true : props.isDraft);
 
-  const [activeTags, setActiveTags] = useState<string[]>(props?.tags||[])
+  const [activeTags, setActiveTags] = useState<number[]>(props?.tags||[])
   const [activeDev, setActiveDev] = useState<number[]>(props?.person_assigned||[])
   
   const [dueDate, setDueDate] = useState<string>(props?.dueDate||"")
@@ -73,16 +73,15 @@ export function NewTicketModal(props: any) {
 
         <div className="container d-flex justify-content-between">
         <ul className="d-flex list-unstyled">
-            {Object.keys(TagsAvailable).map((tag)=>
+            {TagsAvailable.map((tag)=>
                 <a href="#" className="text-decoration-none"
                 onClick={()=>{setActiveTags((pTags)=>{
                     //Add or remove the tag from the active tag array
-                    if (!activeTags.includes(tag)) return [...pTags, tag]
-                    else return pTags.filter((e) => { return e !== tag })     
+                    if (!activeTags.includes(tag.id)) return [...pTags, tag.id]
+                    else return pTags.filter((e) => { return e !== tag.id })
                 })}}
-                key={tag}
-                >
-                    <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
+                key={tag.id}>
+                    <TicketTags on={(activeTags.includes(tag.id))} color={tag.color}>{tag.text}</TicketTags>
                 </a>
             )}
         </ul>
@@ -134,9 +133,9 @@ export function NewTicketModal(props: any) {
 
         <div className="container d-flex justify-content-between">
             <ul className="d-flex list-unstyled">
-                {Object.keys(TagsAvailable).map((tag)=>
-                    <span className={"text-decoration-none"+(activeTags.includes(tag)?"":" d-none")} key={tag}>
-                        <TicketTags on={(activeTags.includes(tag))}>{tag}</TicketTags>
+                {TagsAvailable.map((tag)=>
+                    <span className={"text-decoration-none"+(activeTags.includes(tag.id)?"":" d-none")} key={tag.id}>
+                        <TicketTags on={(activeTags.includes(tag.id))}>{tag.text}</TicketTags>
                     </span>
                 )}
             </ul>

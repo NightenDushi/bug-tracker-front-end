@@ -13,11 +13,11 @@ export function ModalTagManagement(props){
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={props.close}></button>
                 </div>
                 <div className="modal-body">
-                    {Object.keys(TagsAvailable).map((tag)=>
-                        <div key={tag} className="nav mb-2">
-                            <TicketTags on={true}>{tag}</TicketTags>
-                            <input className="form-control w-25" value={tag}></input>
-                            <ColorPicker color={TagsAvailable[tag]}/>
+                    {TagsAvailable.map((tag)=>
+                        <div key={tag.id} className="nav mb-2">
+                            <TicketTags on={true} color={tag.color}>{tag.text}</TicketTags>
+                            <input className="form-control w-25" value={tag.color}></input>
+                            <ColorPicker color={tag.color}/>
                         </div>
                     )}
                 </div>

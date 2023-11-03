@@ -15,6 +15,7 @@ import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
 import { DevAvailable } from './const/DevAvailable.tsx'
+import { TagsAvailable } from './const/TagsAvailable.tsx'
 
 
 export const UserContext = createContext<UserType>({id:0, setId:(_value:number)=>{}});
@@ -67,9 +68,11 @@ function App() {
       {showNewTicketModal && (
       <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
         actionTicketModal={
-        (pName:string, pBody:string, pUrgency:number, pActiveTags:string[], pIsDraft:boolean, pActiveDev:number[])=>{
+        (pName:string, pBody:string, pUrgency:number, pActiveTags:number[], pIsDraft:boolean, pActiveDev:number[])=>{
           const ticket_tags:ITags[] = []
-          pActiveTags.map((t, id)=>{ticket_tags.push({id:id, text:t})})
+          pActiveTags.map((t)=>{ticket_tags.push(
+            TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
+          )})
           setTickets(
               pTickets=>[
                 ...pTickets, {id:pTickets[pTickets.length-1].id+1,

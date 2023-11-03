@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { TicketTags } from './TicketTags.tsx';
 import { ITicket, ITicket_props } from '../@types/tickets';
 import { DevAvailable } from '../const/DevAvailable.tsx';
+import { TagsAvailable } from '../const/TagsAvailable.tsx';
 import { NewTicketModal } from '../NewTicketModal.tsx';
 import './Tickets.css'
 import { ITags } from '../@types/tags';
@@ -27,7 +28,7 @@ function TicketCard(props:ITicket_props) {
           </div>
         </div><ul className="nav d-flex mb-2">
             {tags.map(tag=>
-                <TicketTags key={tag.id} on={true}>{tag.text}</TicketTags>
+                <TicketTags key={tag.id} on={true} color={tag.color}>{tag.text}</TicketTags>
                 )}
         </ul>
         <p className="card-text">{children}</p>
@@ -53,9 +54,11 @@ function TicketCard(props:ITicket_props) {
 }
 
 function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, props: ITicket_props) {
-    return (pName: string, pBody: string, pUrgency: number, pActiveTags: string[], pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
+    return (pName: string, pBody: string, pUrgency: number, pActiveTags: number[], pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
         const ticket_tags: ITags[] = [];
-        pActiveTags.map((t, id) => { ticket_tags.push({ id: id, text: t }); });
+        pActiveTags.map((t) => { ticket_tags.push(
+            TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
+        ); });
 
         console.log(pDueDate);
 
