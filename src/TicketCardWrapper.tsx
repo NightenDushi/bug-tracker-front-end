@@ -27,18 +27,14 @@ export function TicketCardWrapper(props: ITickets_props) {
       })
       .map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
       && (!ticket.isDone || (ticket.isDone && showCompleted)) && (showOnlyOwned==-1 || ticket.person_assigned.includes(showOnlyOwned)) &&
-      (<TicketCard   key={ticket.id} id={ticket.id} title={ticket.title} 
+      (<TicketCard   key={ticket.id} ticket={ticket}
                     className={(urgency_map[ticket.urgency]) + (ticket.isDraft ? " draft" : "") + (ticket.isDone ? " done" : "")}
-                    tags={ticket.tags} isDraft={ticket.isDraft} isDone={ticket.isDone}
-                    urgency={ticket.urgency}
-                    person_assigned={ticket.person_assigned}
-                    dueDate={ticket.dueDate}
                     isUserAdmin={props.isUserAdmin}
 
                     completedAction={TicketCompletedAction(props, ticket_index)}
                     setTickets={props.setTickets}
-        >{ticket.body}</TicketCard>)
-    )}
+        />
+    ))}
   </div>);
 }
 function TicketCompletedAction(props: ITickets_props, ticket_index: number): (e: MouseEvent) => void {

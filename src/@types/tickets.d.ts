@@ -12,17 +12,9 @@ export interface ITicket{
   }
 
 export type ITicket_props = {
-  id:number,
-  isDraft:boolean,
-  isDone:boolean,
+  ticket:ITicket;
   isUserAdmin:boolean,
-  urgency:number,
-  children:string,
-  title:string,
   className:string,
-  tags:ITags[],
-  person_assigned:number[],
-  dueDate?:Date,
   completedAction(e:MouseEvent):void,
   setTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void
 }

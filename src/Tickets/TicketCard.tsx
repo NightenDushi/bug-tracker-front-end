@@ -11,7 +11,8 @@ import { TicketDueDate } from './TicketDueDate.tsx';
 import { DevAvatar } from '../DevAvatar.tsx';
 
 function TicketCard(props:ITicket_props) {
-    const {children, isDone, isDraft, isUserAdmin, urgency, title, className, tags, person_assigned, dueDate, completedAction, setTickets} = props;
+    const {ticket, isUserAdmin, className, completedAction, setTickets} = props;
+    const { id, isDone, isDraft, urgency, title, body, tags, person_assigned, dueDate } = ticket
 
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
@@ -35,14 +36,14 @@ function TicketCard(props:ITicket_props) {
                 <TicketTags key={tag.id} on={true} color={tag.color}>{tag.text}</TicketTags>
                 )}
         </ul>
-        <p className="card-text">{children}</p>
+        <p className="card-text">{body}</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
         <TicketDueDate dueDate={dueDate}/>
         </div>
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-            urgency={urgency} title={title} body={children} isDraft={isDraft}
+            urgency={urgency} title={title} body={body} isDraft={isDraft}
             isAdmin={isUserAdmin} dueDate={dueDate?.toISOString().slice(0,10)}
             tags={()=>{
                 //Convert the ITags[] into string[]
@@ -52,12 +53,12 @@ function TicketCard(props:ITicket_props) {
             }}
             person_assigned={person_assigned}
             actionTicketModal={
-                (isUserAdmin)?editTicketAction(setTickets, props):completedAction} 
+                (isUserAdmin)?editTicketAction(setTickets, id):completedAction} 
         />)}
     </div>)
 }
 
-function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, props: ITicket_props) {
+function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, ticketId:number) {
     return (pName: string, pBody: string, pUrgency: number, pActiveTags: number[], pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
         const ticket_tags: ITags[] = [];
         pActiveTags.map((t) => { ticket_tags.push(
@@ -68,7 +69,7 @@ function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => I
 
         setTickets((pTickets: ITicket[]) => {
             const NewTickets = pTickets.map((t, i: number) => {
-                if (t.id != props.id) return t;
+                if (t.id != ticketId) return t;
                 console.log("Updating " + i);
                 const NewTicket: ITicket = {
                     id: t.id,
