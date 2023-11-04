@@ -1,7 +1,9 @@
-import { useContext } from 'react';
+import { useContext, MouseEventHandler, MouseEvent } from 'react';
 import { ITicket, ITickets_props } from './@types/tickets';
 import TicketCard from './Tickets/TicketCard.tsx';
 import { TicketFilterContext } from './App.tsx';
+
+import { MarkcompleteTicket, PublishTicket } from './const/TicketsAvailable.tsx'
 
 export function TicketCardWrapper(props: ITickets_props) {
   const urgency_map: string[] = ["", "hurry", "urgent"];
@@ -25,36 +27,28 @@ export function TicketCardWrapper(props: ITickets_props) {
         return 1
             
       })
-      .map((ticket, ticket_index) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
+      .map((ticket) => (!ticket.isDraft || (ticket.isDraft && (showDraft && isAdmin)))
       && (!ticket.isDone || (ticket.isDone && showCompleted)) && (showOnlyOwned==-1 || ticket.person_assigned.includes(showOnlyOwned)) &&
       (<TicketCard   key={ticket.id} ticket={ticket}
                     className={(urgency_map[ticket.urgency]) + (ticket.isDraft ? " draft" : "") + (ticket.isDone ? " done" : "")}
                     isUserAdmin={props.isUserAdmin}
 
-                    completedAction={TicketCompletedAction(props, ticket_index)}
+                    completedAction={TicketCompletedAction(ticket, props.setTickets)}
                     setTickets={props.setTickets}
         />
     ))}
   </div>);
 }
-function TicketCompletedAction(props: ITickets_props, ticket_index: number): (e: MouseEvent) => void {
+function TicketCompletedAction(pTicket: ITicket, setTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void): MouseEventHandler {
     return (e: MouseEvent) => {
         e.preventDefault();
-        props.setTickets((pTickets: ITicket[]) => {
-            const NewTickets = pTickets.map((t, i: number) => {
-                if (i != ticket_index) return t
-                
-                const NewTicket = Object.assign({}, t);
-                if (t.isDraft) NewTicket.isDraft = false;
-                else if (t.isDone) NewTicket.isDone = false; //Republish the ticket
-                else NewTicket.isDone = true;
+        if (pTicket.isDraft){
+          PublishTicket(pTicket.id, setTickets)
+          return
+        } 
 
-                return NewTicket;
-            });
-
-            return NewTickets;
-        }
-        );
+        if (pTicket.isDone) MarkcompleteTicket(pTicket.id, setTickets, false)
+        else MarkcompleteTicket(pTicket.id, setTickets)
     };
 }
 

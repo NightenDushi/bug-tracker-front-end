@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import './Tickets.css'
+import { useState, MouseEventHandler } from 'react';
 
 import { TicketTags } from './TicketTags.tsx';
 import { ITicket, ITicket_props } from '../@types/tickets';
-import { DevAvailable } from '../const/DevAvailable.tsx';
-import { TagsAvailable } from '../const/TagsAvailable.tsx';
-import { NewTicketModal } from '../NewTicketModal.tsx';
-import './Tickets.css'
 import { ITags } from '../@types/tags';
 import { TicketDueDate } from './TicketDueDate.tsx';
+
+import { DevAvailable } from '../const/DevAvailable.tsx';
+import { TagsAvailable } from '../const/TagsAvailable.tsx';
+import { ReplaceTicket } from '../const/TicketsAvailable.tsx';
+
+import { NewTicketModal } from '../NewTicketModal.tsx';
 import { DevAvatar } from '../DevAvatar.tsx';
+
 
 function TicketCard(props:ITicket_props) {
     const {ticket, isUserAdmin, className, completedAction, setTickets} = props;
@@ -45,12 +49,13 @@ function TicketCard(props:ITicket_props) {
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
             urgency={urgency} title={title} body={body} isDraft={isDraft}
             isAdmin={isUserAdmin} dueDate={dueDate?.toISOString().slice(0,10)}
-            tags={()=>{
+            
+            tags={function(pTags){
                 //Convert the ITags[] into string[]
                 const TagsString:number[] = []
-                tags.map((t)=>{TagsString.push(t.id)})
+                pTags.map((t)=>{TagsString.push(t.id)})
                 return TagsString;
-            }}
+            }(tags)}
             person_assigned={person_assigned}
             actionTicketModal={
                 (isUserAdmin)?editTicketAction(setTickets, id):completedAction} 
@@ -59,38 +64,17 @@ function TicketCard(props:ITicket_props) {
 }
 
 function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, ticketId:number) {
-    return (pName: string, pBody: string, pUrgency: number, pActiveTags: number[], pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
+    return (pTitle: string, pBody: string, pUrgency: number, pActiveTags: number[],
+            pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
         const ticket_tags: ITags[] = [];
         pActiveTags.map((t) => { ticket_tags.push(
             TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
         ); });
 
-        console.log(pDueDate);
-
-        setTickets((pTickets: ITicket[]) => {
-            const NewTickets = pTickets.map((t, i: number) => {
-                if (t.id != ticketId) return t;
-                console.log("Updating " + i);
-                const NewTicket: ITicket = {
-                    id: t.id,
-                    isDone: false, isDraft: pIsDraft, urgency: pUrgency,
-                    title: pName, body: pBody,
-                    tags: ticket_tags,
-                    person_assigned: pActiveDev
-                };
-
-                if (pDueDate !== "" && pDueDate !== undefined) NewTicket.dueDate = new Date(pDueDate);
-                return NewTicket;
-            });
-
-            return NewTickets;
-        }
-
-        );
+        ReplaceTicket(ticketId, pTitle, pBody, pUrgency, ticket_tags, pActiveDev, pDueDate, pIsDraft, setTickets)
     };
 }
-
-function CompletedPublishBtn(props){
+function CompletedPublishBtn(props:{action:MouseEventHandler<HTMLAnchorElement>,isDraft:boolean,isDone:boolean}){
     return (<a className="btn btn-secondary shadow me-2 w-50" href="#" onClick={props.action}>{(props.isDraft)?"Publish":((props.isDone)?"Re-enable":"Complete")}</a>)
 }
 

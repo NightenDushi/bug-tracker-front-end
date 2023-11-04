@@ -6,7 +6,20 @@ import { TagsAvailable } from './const/TagsAvailable.tsx';
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
 
-export function NewTicketModal(props: any) {
+type NewTicketModalProps = {
+  isAdmin?:boolean,
+  isDraft?:boolean,
+  urgency?:number,
+  title?:string,
+  body?:string,
+  tags?:number[],
+  person_assigned?:number[],
+  dueDate?:string,
+  close:()=>void,
+  actionTicketModal:(...args:any)=>void
+}
+
+export function NewTicketModal(props:NewTicketModalProps) {
   const isAdmin = (props.isAdmin === undefined) ? true : props.isAdmin;
 
   const [urgency, setUrgency] = useState<number>(props?.urgency||0);
@@ -94,7 +107,9 @@ export function NewTicketModal(props: any) {
         </div>
 
         <div className="modal-footer">
-          <label>Keep as draft</label><input type="checkbox" checked={isDraft} onChange={(e)=>{setDraft((e.target.value === 'true'))}}></input>
+          <label>Keep as draft</label>
+          <input type="checkbox" checked={isDraft}
+                onChange={(e)=>{setDraft(!isDraft)}}></input>
           <button type="button" className="btn btn-primary"
             onClick={addticket}
           >Create</button>

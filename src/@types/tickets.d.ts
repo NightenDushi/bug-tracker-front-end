@@ -1,4 +1,6 @@
+import { MouseEventHandler } from 'react'
 import { ITags } from './@types/tags'
+import { CommentType } from './@types/comments'
 export interface ITicket{
     id:number,
     isDone:boolean,
@@ -9,13 +11,14 @@ export interface ITicket{
     tags:ITags[],
     person_assigned:number[],
     dueDate?:Date,
+    comments:CommentType[];
   }
 
 export type ITicket_props = {
   ticket:ITicket;
   isUserAdmin:boolean,
   className:string,
-  completedAction(e:MouseEvent):void,
+  completedAction:MouseEventHandler<HTMLAnchorElement>,
   setTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void
 }
 export type ITickets_props = {
