@@ -38,7 +38,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
         else props.actionTicketModal(e)
     }
 
-  if (isAdmin) return <div className="modal d-block" tabIndex={-1} role="dialog">
+  if (isAdmin) return <div className="modal d-block modal-background" tabIndex={-1} role="dialog">
     <div className="modal-dialog" role="document">
       <div className="modal-content">
         <div className="modal-header">
@@ -120,7 +120,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
   </div>;
 
   //Not admin, Read-only view
-  return <div className="modal d-block" tabIndex={-1} role="dialog">
+  return <div className="modal d-block modal-background" tabIndex={-1} role="dialog">
       <div className="modal-dialog" role="document">
       <div className="modal-content">
         <div className="modal-header">

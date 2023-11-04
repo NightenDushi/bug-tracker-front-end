@@ -1,5 +1,5 @@
 export function AlertModal(props) {
-    return <div className="modal d-block">
+    return <div className="modal d-block modal-background">
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">

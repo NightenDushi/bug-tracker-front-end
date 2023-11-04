@@ -14,7 +14,7 @@ export function ModalTagManagement(props){
     const [alertModalSubjectId, setAlertModalSubjectId] = useState<number>(0);
     const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
 
-    return <div className="modal d-block" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+    return <div className="modal d-block modal-background" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">
