@@ -1,12 +1,18 @@
 import { useState, MouseEvent, KeyboardEvent} from 'react';
+import { ITicket } from './@types/tickets'
 import { TicketTags } from './Tickets/TicketTags.tsx';
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
+import { TicketsAvailable } from './const/TicketsAvailable.tsx';
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
 
+import heartIcon from './assets/heart-solid.svg'
+
+//TODO(Nathan) Pass the ticket directly in the props
 type NewTicketModalProps = {
+  id?:number,
   isAdmin?:boolean,
   isDraft?:boolean,
   urgency?:number,
@@ -109,12 +115,13 @@ export function NewTicketModal(props:NewTicketModalProps) {
         <div className="modal-footer">
           <label>Keep as draft</label>
           <input type="checkbox" checked={isDraft}
-                onChange={(e)=>{setDraft(!isDraft)}}></input>
+                onChange={()=>{setDraft(!isDraft)}}></input>
           <button type="button" className="btn btn-primary"
             onClick={addticket}
           >Create</button>
           <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
+      {(props.id!==undefined)&&(<CommentSection ticketId={props.id}/>)}
       </div>
     </div>
   </div>;
@@ -148,11 +155,11 @@ export function NewTicketModal(props:NewTicketModalProps) {
 
         <div className="container d-flex justify-content-between">
             <ul className="d-flex list-unstyled">
-                {TagsAvailable.map((tag)=>
-                    <span className={"text-decoration-none"+(activeTags.includes(tag.id)?"":" d-none")} key={tag.id}>
-                        <TicketTags on={(activeTags.includes(tag.id))}>{tag.text}</TicketTags>
-                    </span>
-                )}
+              {TagsAvailable.map((tag)=>(activeTags.includes(tag.id))&&
+                  <a href="#" className="text-decoration-none" key={tag.id}>
+                      <TicketTags on={true} color={tag.color}>{tag.text}</TicketTags>
+                  </a>
+              )}
             </ul>
             <TicketDueDate dueDate={new Date(dueDate)}/>
         </div>
@@ -161,7 +168,38 @@ export function NewTicketModal(props:NewTicketModalProps) {
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={addticket}>Completed</button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
+      {(props.id!==undefined)&&(<CommentSection ticketId={props.id}/>)}
       </div>
     </div>
   </div>;
+}
+
+
+function CommentSection(props:{ticketId:number}){
+  const { comments } = TicketsAvailable.find((t)=>t.id==props.ticketId) as ITicket
+  return (<div className="container p-2">
+            <p>Comments on this post : 3{/*comments.length*/}</p>
+            <div className="d-flex">
+              <DevAvatar dev={DevAvailable.find((d)=>d.id==1)} />
+              <input className="ms-2 form-control" placeholder="Type your comment here"></input>
+              <button className="btn btn-primary">Send</button>
+            </div>
+            <div className="mt-2 comment-container partial-display">
+              <Comment dev={DevAvailable.find((d)=>d.id==0)} text={"Bonjour!"}/>
+              <Comment dev={DevAvailable.find((d)=>d.id==2)} text={"Dzień dobry!"}/>
+              <a href="#" className="btn">See more...</a>
+            </div>
+          </div>
+  )
+}
+
+function Comment(props){
+  
+  return (
+  <div className="position-relative container bg-light p-3 m-2 d-flex comment">
+    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted 2 days ago</code>
+    <DevAvatar dev={props.dev} />
+    <p className="m-0 align-self-center ms-2">{props.text}</p>
+    <img src={heartIcon} className="ms-auto me-2" width="20"/>
+  </div>)
 }

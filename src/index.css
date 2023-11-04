@@ -5,7 +5,24 @@
 .devavatar img:nth-of-type(2){
     -webkit-filter: drop-shadow(-2px 2px 2px rgba(34, 34, 34, 0.8));
     filter: drop-shadow(-2px 2px 2px rgba(34, 34, 34, 0.8));
-}     background:#0006;
+} 
+
+.comment-container.partial-display .comment:last-of-type{
+    position:relative;
+}
+.comment-container.partial-display .comment:last-of-type:after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:100%;
+    background:linear-gradient(0deg, white,60%, #FFF3);
+    
+}
+
+.modal-background{
+    background:#0006;
     animation:fadeInBackgroundModal 0.1s;
 }
 .modal-background>.modal-dialog{
@@ -21,3 +38,4 @@
     100% { margin-top: var(--bs-modal-margin); opacity:100% }
 }
 
+/**/

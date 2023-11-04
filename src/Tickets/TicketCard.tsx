@@ -47,7 +47,7 @@ function TicketCard(props:ITicket_props) {
         </div>
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-            urgency={urgency} title={title} body={body} isDraft={isDraft}
+            id={id} urgency={urgency} title={title} body={body} isDraft={isDraft}
             isAdmin={isUserAdmin} dueDate={dueDate?.toISOString().slice(0,10)}
             
             tags={function(pTags){
