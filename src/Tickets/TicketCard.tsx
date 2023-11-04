@@ -16,7 +16,7 @@ function TicketCard(props:ITicket_props) {
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
     
-    return (<div className='card col col-sm-6 col-md-4 col-lg-3'>
+    return (<div className='card col-sm-6 col-md-4 col-lg-3'>
         <div className={"card-body ticket_card "+className}>
         <div className="d-flex align-items-center justify-content-between">
             <h5 className="card-title">{title}</h5>
