@@ -23,10 +23,14 @@ function TicketCard(props:ITicket_props) {
             <div>
               {person_assigned.map((dev_id)=>{
                     const dev = DevAvailable.find((e)=> e.id == dev_id)
-                    return <DevAvatar key={dev?.id} dev={dev} activated={true} />
+                    return (
+                        <span key={dev?.id} className="me-2">
+                            <DevAvatar dev={dev} activated={true} />
+                        </span>)
                 })}
           </div>
-        </div><ul className="nav d-flex mb-2">
+        </div>
+        <ul className="nav d-flex mb-2">
             {tags.map(tag=>
                 <TicketTags key={tag.id} on={true} color={tag.color}>{tag.text}</TicketTags>
                 )}
@@ -42,8 +46,8 @@ function TicketCard(props:ITicket_props) {
             isAdmin={isUserAdmin} dueDate={dueDate?.toISOString().slice(0,10)}
             tags={()=>{
                 //Convert the ITags[] into string[]
-                const TagsString:string[] = []
-                tags.map((t)=>{TagsString.push(t.text)})
+                const TagsString:number[] = []
+                tags.map((t)=>{TagsString.push(t.id)})
                 return TagsString;
             }}
             person_assigned={person_assigned}

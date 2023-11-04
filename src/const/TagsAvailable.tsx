@@ -9,5 +9,24 @@ export function AddTags(pText:string, pColor:string, pCallBack=(_foo:ITags[])=>{
     pCallBack(TagsAvailable)
 }
 
+export function RenameTags(pId:number, pNewName:string, pCallBack=(_foo:ITags[])=>{}){
+    TagsAvailable = TagsAvailable.map((t)=>{
+        if (t.id===pId) t.text = pNewName;
+        return t
+    })
+    pCallBack(TagsAvailable)
+}
+export function RecolorTags(pId:number, pNewColor:string, pCallBack=(_foo:ITags[])=>{}){
+    TagsAvailable = TagsAvailable.map((t)=>{
+        if (t.id===pId) t.color = pNewColor;
+        return t
+    })
+    pCallBack(TagsAvailable)
+}
+export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
+    TagsAvailable = TagsAvailable.filter((t)=>t.id !== pId)
+    pCallBack(TagsAvailable)
+}
+
 AddTags("foo", "primary")
 AddTags("bar", "warning")

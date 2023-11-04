@@ -85,7 +85,7 @@ function App() {
         }}
         />)}
         {showModalTag && (
-          <ModalTagManagement close={()=>{setShowModalTag(false)}}/>
+          <ModalTagManagement close={()=>{setShowModalTag(false)}} tickets={tickets} setTickets={setTickets}/>
         )}
     </>
   )

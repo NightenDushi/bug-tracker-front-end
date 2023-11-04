@@ -5,15 +5,15 @@ export type DevType = { id:number, name: string; image: string; isAdmin:boolean 
 export let DevAvailable: DevType[] = [];
 
 AddDev("nathan", "31c88339bc905db98016c725dd3d418a.jpeg", ()=>{}, true)
-AddDev("tim", "03.41881874.webp", ()=>{})
-AddDev("oliwia", "01.d5f1f706.webp", ()=>{})
+AddDev("tim", "03.41881874.webp")
+AddDev("oliwia", "01.d5f1f706.webp")
 
-export function AddDev(pName:string, pImage:string, pCallBack, pAdmin=false){
+export function AddDev(pName:string, pImage:string, pCallBack=(_foo:DevType[])=>{}, pAdmin=false){
     DevAvailable = [...DevAvailable, {id:dev_id_increment, name:pName, image:pImage, isAdmin:pAdmin}]
     dev_id_increment += 1;
     pCallBack(DevAvailable)
 }
-export function RemoveDev(pDevId:number, pCallBack){
+export function RemoveDev(pDevId:number, pCallBack=(_foo:DevType[])=>{}){
     DevAvailable = DevAvailable.filter((d)=>d.id !== pDevId)
     pCallBack(DevAvailable)
 }
@@ -24,7 +24,7 @@ export function RenameDev(pDevId:number, pNewName:string, pCallBack:(prevVar: (D
     })
     pCallBack(DevAvailable)
 }
-export function SetAdminDev(pDevId:number, pNewAdminValue:boolean, pCallBack){
+export function SetAdminDev(pDevId:number, pNewAdminValue:boolean, pCallBack=(_foo:DevType[])=>{}){
     DevAvailable = DevAvailable.map((d)=>{
         if (d.id===pDevId) d.isAdmin = pNewAdminValue;
         return d
