@@ -42,34 +42,34 @@ function App() {
     <>
       <UserContext.Provider value={{id:user_id, setId:setUserId}}>
         <LoggedNavBar isAdmin={user.isAdmin} setShowModalDev={()=>{setShowModalDev(true)}} setShowModalTag={()=>{setShowModalTag(true)}} />
-      </UserContext.Provider>
-      <div className="container grid">
-        <h1>My tickets</h1>
-        {user.isAdmin && (<a href="#" className="btn btn-primary mb-3"
-        onClick={()=>{setShowNewTicketModal(true);}}>
-          Create a ticket
-        </a>)}
-        <TicketFilterContext.Provider value={{isAdmin:user.isAdmin,
-                                            showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,sortOrder:sortOrder,
-                                            setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft, setSortOrder:setSortOrder}}>
-          <TicketFilter user_id={user_id}/>
-          <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user.isAdmin}/>
-        </TicketFilterContext.Provider>
-      </div>
-      {showModalDev && (
-      <ModalDevManagement user_id={user_id} close={()=>{setShowModalDev(false)}} tickets={tickets} setTickets={setTickets} />)}
-      
-      {showNewTicketModal && (
-      <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
-        actionTicketModal={
-        (pTitle:string, pBody:string, pUrgency:number, pActiveTags:number[], pIsDraft:boolean, pActiveDev:number[], pDueDate:string)=>{
-          const ticket_tags:ITags[] = []
-          pActiveTags.map((t)=>{ticket_tags.push(
-            TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
-          )})
-          AddTicket(pTitle,pBody,pUrgency,ticket_tags,pActiveDev,pDueDate,false,pIsDraft,setTickets)
-        }}
-        />)}
+        <div className="container grid">
+          <h1>My tickets</h1>
+          {user.isAdmin && (<a href="#" className="btn btn-primary mb-3"
+          onClick={()=>{setShowNewTicketModal(true);}}>
+            Create a ticket
+          </a>)}
+          <TicketFilterContext.Provider value={{isAdmin:user.isAdmin,
+                                              showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,sortOrder:sortOrder,
+                                              setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft, setSortOrder:setSortOrder}}>
+            <TicketFilter/>
+            <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user.isAdmin}/>
+          </TicketFilterContext.Provider>
+        </div>
+        {showModalDev && (
+        <ModalDevManagement close={()=>{setShowModalDev(false)}} tickets={tickets} setTickets={setTickets} />)}
+        
+        {showNewTicketModal && (
+        <NewTicketModal close={()=>{setShowNewTicketModal(false)}}
+          actionTicketModal={
+          (pTitle:string, pBody:string, pUrgency:number, pActiveTags:number[], pIsDraft:boolean, pActiveDev:number[], pDueDate:string)=>{
+            const ticket_tags:ITags[] = []
+            pActiveTags.map((t)=>{ticket_tags.push(
+              TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
+            )})
+            AddTicket(pTitle,pBody,pUrgency,ticket_tags,pActiveDev,pDueDate,false,pIsDraft,setTickets)
+          }}
+          />)}
+        </UserContext.Provider>
         {showModalTag && (
           <ModalTagManagement close={()=>{setShowModalTag(false)}} tickets={tickets} setTickets={setTickets}/>
         )}

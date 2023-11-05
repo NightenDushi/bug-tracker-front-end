@@ -1,19 +1,21 @@
-import { useState, MouseEvent, KeyboardEvent} from 'react';
+import { useState, useContext, MouseEvent, KeyboardEvent} from 'react';
+import { UserContext } from './App.tsx';
 import { ITicket } from './@types/tickets'
-import { TicketTags } from './Tickets/TicketTags.tsx';
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
 import { TicketsAvailable, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
+
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
+import { TicketTags } from './Tickets/TicketTags.tsx';
 
 import heartIcon from './assets/heart-solid.svg';
 import xIcon from './assets/xmark-solid.svg'
 
 //TODO(Nathan) Pass the ticket directly in the props
 type NewTicketModalProps = {
-  id?:number,
+  ticket_id?:number,
   isAdmin?:boolean,
   isDraft?:boolean,
   urgency?:number,
@@ -29,6 +31,7 @@ type NewTicketModalProps = {
 }
 
 export function NewTicketModal(props:NewTicketModalProps) {
+  const {id:user_id} = useContext(UserContext);
   const isAdmin = (props.isAdmin === undefined) ? true : props.isAdmin;
 
   const [urgency, setUrgency] = useState<number>(props?.urgency||0);
@@ -46,6 +49,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
         if (isAdmin) {props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev, dueDate); props.close()}
         else props.actionTicketModal(e)
     }
+
 
   if (isAdmin) return <div className="modal d-block modal-background" tabIndex={-1} role="dialog">
     <div className="modal-dialog" role="document">
@@ -124,7 +128,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
           >Create</button>
           <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.id} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.ticket_id} userId={user_id} setTickets={props.setTickets}/>)}
       </div>
     </div>
   </div>;
@@ -171,24 +175,24 @@ export function NewTicketModal(props:NewTicketModalProps) {
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={addticket}>Completed</button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.id} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.ticket_id} userId={user_id} setTickets={props.setTickets}/>)}
       </div>
     </div>
   </div>;
 }
 
 
-function CommentSection(props:{ticketId:number, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
+function CommentSection(props:{ticketId:number, userId:number, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
   const { comments } = TicketsAvailable.find((t)=>t.id==props.ticketId) as ITicket
   const [commentFieldText, setCommentFieldText] = useState<string>("");
   const [seeMore, setSeeMore] = useState<boolean>(false);
-  const MOCK_USER_ID:number = 1;
+  
   const DEFAULT_DISPLAYED_COMMENTS = 3;
-  const SendComment = ()=>{AddCommentTicket(MOCK_USER_ID, props.ticketId, commentFieldText,props.setTickets);setCommentFieldText("")}
+  const SendComment = ()=>{AddCommentTicket(props.userId, props.ticketId, commentFieldText,props.setTickets);setCommentFieldText("")}
   return (<div className="container p-2">
             <p>Comments on this post : {comments.length}</p>
             <div className="d-flex">
-              <DevAvatar dev={DevAvailable.find((d)=>d.id==MOCK_USER_ID)} />
+              <DevAvatar dev={DevAvailable.find((d)=>d.id==props.userId)} />
               <input className="ms-2 form-control" placeholder="Type your comment here"
                     value={commentFieldText} onChange={(e)=>{setCommentFieldText(e.target.value)}}
                     onKeyDown={(e) => { if (e.key === 'Enter') {SendComment()} }}></input>
@@ -197,11 +201,12 @@ function CommentSection(props:{ticketId:number, setTickets:(prevVar: ITicket[] |
             <div className={"mt-2 comment-container "+((comments.length>DEFAULT_DISPLAYED_COMMENTS && !seeMore)?"partial-display":"")}>
               {
                 comments.map((c, c_index)=>{
-                  if (c_index<DEFAULT_DISPLAYED_COMMENTS || seeMore){
+                  if (Math.abs(comments.length-1-c_index)<DEFAULT_DISPLAYED_COMMENTS || seeMore){
                     return (
                       <Comment key={c.id} dev={DevAvailable.find((d)=>d.id==c.senderId)} text={c.body}
-                            liked={c.likes.includes(MOCK_USER_ID)} likes_number={c.likes.length}
-                            likeAction={()=>{LikeCommentTicket(MOCK_USER_ID, props.ticketId, c.id, props.setTickets)}}
+                            liked={c.likes.includes(props.userId)} likes_number={c.likes.length}
+                            date={c.date}
+                            likeAction={()=>{LikeCommentTicket(props.userId, props.ticketId, c.id, props.setTickets)}}
                             removeAction={()=>{RemoveCommentTicket(props.ticketId, c.id, props.setTickets)}}/>
                     )
                   }
@@ -217,7 +222,7 @@ function CommentSection(props:{ticketId:number, setTickets:(prevVar: ITicket[] |
 function Comment(props){
   return (
   <div className="position-relative container bg-light p-3 m-2 d-flex align-items-center comment">
-    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted 2 days ago</code>
+    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted {props.date.toString()}</code>
     <DevAvatar dev={props.dev} />
     <p className="m-0 ms-2">{props.text}</p>
     <a href="#" onClick={props.likeAction} className={"ms-auto me-2 text-decoration-none position-relative comment-button "+((props.liked)?"activated":"")}>

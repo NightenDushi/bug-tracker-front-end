@@ -63,7 +63,7 @@ export function PublishTicket(pId:number, pCallBack=(_foo:ITicket[])=>{}){
 
 export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
                                 pCallBack=(_foo:ITicket[])=>{}){
-    const newComment:CommentType = {id:comment_id_increment, senderId:pUserId, body:pText, time:new Date(), likes:[]}
+    const newComment:CommentType = {id:comment_id_increment, senderId:pUserId, body:pText, date:new Date(), likes:[]}
     TicketsAvailable = TicketsAvailable.map((t)=>{
         if (t.id==pTicketId){
             t.comments.push(newComment);

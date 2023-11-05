@@ -2,6 +2,6 @@ export type CommentType = {
     id:number,
     senderId:number,
     body:string,
-    time:Date,
+    date:Date,
     likes:number[]
 }

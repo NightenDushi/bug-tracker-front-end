@@ -42,7 +42,7 @@ function ModalChangeAccount(props){
             const dev_activated = (dev.id!=props.id);
             return <a key={dev.id} className={"d-block mb-2 "+(dev_activated?"":"d-none")} href="#"
                 onClick={()=>{
-                    props.change(dev.id); props.close()
+                    props.change(dev.id); props.close();
                 }}
                 >
                     <DevAvatar key={dev.name} dev={dev}/>
