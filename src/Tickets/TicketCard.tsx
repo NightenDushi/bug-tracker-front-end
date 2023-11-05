@@ -13,16 +13,22 @@ import { ReplaceTicket } from '../const/TicketsAvailable.tsx';
 import { NewTicketModal } from '../NewTicketModal.tsx';
 import { DevAvatar } from '../DevAvatar.tsx';
 
+import CommentIcon from '../assets/comment-regular.svg'
 
 function TicketCard(props:ITicket_props) {
     const {ticket, isUserAdmin, className, completedAction, setTickets} = props;
-    const { id, isDone, isDraft, urgency, title, body, tags, person_assigned, dueDate } = ticket
+    const { id, isDone, isDraft, urgency, title, body, tags, person_assigned, dueDate, comments } = ticket
 
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
     
-    return (<div className='card col-sm-6 col-md-4 col-lg-3'>
+    return (
+    <div className='card col-sm-6 col-md-6 col-lg-4'>
         <div className={"card-body ticket_card "+className}>
+        {(comments.length>0)&&(<div className="d-flex position-absolute end-0 top-0 p-2">
+            <img src={CommentIcon} alt="Comment icon" width="20" height="20"/>
+            <span>{comments.length}</span>
+        </div>)}
         <div className="d-flex align-items-center justify-content-between">
             <h5 className="card-title">{title}</h5>
             <div>
