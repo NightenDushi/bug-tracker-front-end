@@ -38,4 +38,10 @@
     100% { margin-top: var(--bs-modal-margin); opacity:100% }
 }
 
-/**/
+.comment-button.activated{
+    filter:brightness(0) saturate(100%) invert(35%) sepia(96%) saturate(882%) hue-rotate(342deg) brightness(95%) contrast(99%)
+}
+.comment-button:hover{
+    translate: 0px 2px ;
+    opacity:0.4;
+}

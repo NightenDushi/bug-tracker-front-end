@@ -58,7 +58,8 @@ function TicketCard(props:ITicket_props) {
             }(tags)}
             person_assigned={person_assigned}
             actionTicketModal={
-                (isUserAdmin)?editTicketAction(setTickets, id):completedAction} 
+                (isUserAdmin)?editTicketAction(setTickets, id):completedAction}
+            setTickets={setTickets}
         />)}
     </div>)
 }

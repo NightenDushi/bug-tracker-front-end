@@ -1,8 +1,10 @@
 import { ITicket } from '../@types/tickets'
+import { CommentType } from '../@types/comment'
 import { ITags } from '../@types/tags'
 import { TagsAvailable } from '../const/TagsAvailable.tsx'
 
 let ticket_id_increment = 0;
+let comment_id_increment = 0;
 export let TicketsAvailable:ITicket[] = []
 
 export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
@@ -58,11 +60,47 @@ export function PublishTicket(pId:number, pCallBack=(_foo:ITicket[])=>{}){
     })
     pCallBack(TicketsAvailable)
 }
-// export function RemoveTicket(pId:number, pCallBack=(_foo:ITicket[])=>{}){
-//     TicketsAvailable = TicketsAvailable.filter((t)=>t.id !== pId)
-//     pCallBack(TicketsAvailable)
-// }
 
+export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
+                                pCallBack=(_foo:ITicket[])=>{}){
+    const newComment:CommentType = {id:comment_id_increment, senderId:pUserId, body:pText, time:new Date(), likes:[]}
+    TicketsAvailable = TicketsAvailable.map((t)=>{
+        if (t.id==pTicketId){
+            t.comments.push(newComment);
+        }
+        return t
+    })
+    
+    comment_id_increment += 1;
+    pCallBack(TicketsAvailable)
+}
+export function RemoveCommentTicket(pTicketId:number, pCommentId:number,
+                                    pCallBack=(_foo:ITicket[])=>{}){
+    TicketsAvailable = TicketsAvailable.map((t)=>{
+        if (t.id==pTicketId){
+            t.comments = t.comments.filter((c)=>(c.id!==pCommentId))
+        }
+        return t
+    })
+    pCallBack(TicketsAvailable)
+}
+export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:number,
+    pCallBack=(_foo:ITicket[])=>{}){
+    TicketsAvailable = TicketsAvailable.map((t)=>{
+        if (t.id==pTicketId){
+            for (let i=0; i<t.comments.length; i++){
+                if (t.comments[i].id == pCommentId){
+                    //Remove or add the user id to the like list
+                    if (!t.comments[i].likes.includes(pUserId)) t.comments[i].likes.push(pUserId)
+                    else t.comments[i].likes = t.comments[i].likes.filter((ids:number)=>ids!=pUserId)
+                    break;
+                }
+            }
+        }
+        return t
+    })
+    pCallBack(TicketsAvailable)
+}
 
 AddTicket("Bug on the front page", "This is a test", 1, [TagsAvailable[0],TagsAvailable[1]], [0],
             "2023-11-01", false, false)
