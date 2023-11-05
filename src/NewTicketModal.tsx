@@ -125,7 +125,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
                 onChange={()=>{setDraft(!isDraft)}}></input>
           <button type="button" className="btn btn-primary"
             onClick={addticket}
-          >Create</button>
+          >{(props.ticket_id===undefined)?"Create":"Update"}</button>
           <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
       {(props.ticket_id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.ticket_id} userId={user_id} setTickets={props.setTickets}/>)}
