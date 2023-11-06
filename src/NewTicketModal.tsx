@@ -130,7 +130,8 @@ export function NewTicketModal(props:NewTicketModalProps) {
           >{(props.ticket_id===undefined)?"Create":"Update"}</button>
           <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.ticket_id} userId={user_id} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&
+        (<CommentSection ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
       </div>
     </div>
   </div>;
@@ -177,14 +178,15 @@ export function NewTicketModal(props:NewTicketModalProps) {
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={addticket}>Completed</button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&(<CommentSection ticketId={props.ticket_id} userId={user_id} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&
+        (<CommentSection ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
       </div>
     </div>
   </div>;
 }
 
 
-function CommentSection(props:{ticketId:number, userId:number, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
+function CommentSection(props:{ticketId:number, userId:number, userIsAdmin:boolean, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
   const { comments } = TicketsAvailable.find((t)=>t.id==props.ticketId) as ITicket
   const [commentFieldText, setCommentFieldText] = useState<string>("");
   const [seeMore, setSeeMore] = useState<boolean>(false);
@@ -207,7 +209,7 @@ function CommentSection(props:{ticketId:number, userId:number, setTickets:(prevV
                     return (
                       <Comment key={c.id} dev={DevAvailable.find((d)=>d.id==c.senderId)} text={c.body}
                             liked={c.likes.includes(props.userId)} likes_number={c.likes.length}
-                            date={c.date}
+                            date={c.date} currentUserId={props.userId} currentUserIsAdmin={props.userIsAdmin}
                             likeAction={()=>{LikeCommentTicket(props.userId, props.ticketId, c.id, props.setTickets)}}
                             removeAction={()=>{RemoveCommentTicket(props.ticketId, c.id, props.setTickets)}}/>
                     )
@@ -231,6 +233,6 @@ function Comment(props){
       {(props.likes_number>0)&&(<span className="bottom-0 end-0 me-1">{props.likes_number}</span>)}
       <img src={heartIcon} width="20"/>
     </a>
-    <a href="#" onClick={props.removeAction} className="me-2 comment-button position-relative"><img src={xIcon} width="20"/></a>
+    {(props.currentUserId==props.dev.id || props.currentUserIsAdmin)&&(<a href="#" onClick={props.removeAction} className="me-2 comment-button position-relative"><img src={xIcon} width="20"/></a>)}
   </div>)
 }
