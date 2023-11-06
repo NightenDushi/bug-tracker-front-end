@@ -10,6 +10,8 @@ import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
 import { TicketTags } from './Tickets/TicketTags.tsx';
 
+import Interval from './utils/interval.ts'
+
 import heartIcon from './assets/heart-solid.svg';
 import xIcon from './assets/xmark-solid.svg'
 
@@ -195,8 +197,8 @@ function CommentSection(props:{ticketId:number, userId:number, setTickets:(prevV
               <DevAvatar dev={DevAvailable.find((d)=>d.id==props.userId)} />
               <input className="ms-2 form-control" placeholder="Type your comment here"
                     value={commentFieldText} onChange={(e)=>{setCommentFieldText(e.target.value)}}
-                    onKeyDown={(e) => { if (e.key === 'Enter') {SendComment()} }}></input>
-              <button className="btn btn-primary" onClick={SendComment}>Send</button>
+                    onKeyDown={(e) => { if (e.key === 'Enter' && commentFieldText.length>0) {SendComment()} }}></input>
+              <button className="btn btn-primary" onClick={()=>{if(commentFieldText.length>0)SendComment()}}>Send</button>
             </div>
             <div className={"mt-2 comment-container "+((comments.length>DEFAULT_DISPLAYED_COMMENTS && !seeMore)?"partial-display":"")}>
               {
@@ -222,7 +224,7 @@ function CommentSection(props:{ticketId:number, userId:number, setTickets:(prevV
 function Comment(props){
   return (
   <div className="position-relative container bg-light p-3 m-2 d-flex align-items-center comment">
-    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted {props.date.toString()}</code>
+    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted {Interval(props.date)} ago</code>
     <DevAvatar dev={props.dev} />
     <p className="m-0 ms-2">{props.text}</p>
     <a href="#" onClick={props.likeAction} className={"ms-auto me-2 text-decoration-none position-relative comment-button "+((props.liked)?"activated":"")}>
