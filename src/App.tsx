@@ -1,5 +1,5 @@
 
-import { useState, createContext } from 'react';
+import { useState, useEffect, createContext } from 'react';
 
 import { UserType } from './@types/user';
 import { ITicket } from './@types/tickets'
@@ -14,7 +14,7 @@ import { ModalTagManagement } from './ModalTagManagement.tsx';
 import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
-import { TicketsAvailable, AddTicket } from './const/TicketsAvailable.tsx'
+import { TicketsAvailable, AddTicket, GetTicket } from './const/TicketsAvailable.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 import { TagsAvailable } from './const/TagsAvailable.tsx'
 
@@ -23,6 +23,7 @@ export const UserContext = createContext<UserType>({id:0, setId:(_value:number)=
 export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:false,showOnlyOwned:-1,showCompleted:false,showDraft:false, sortOrder:"name", setOnlyOwned:(_value:number)=>{}, setCompleted:(_value:boolean)=>{}, setDraft:(_value:boolean)=>{}, setSortOrder:(_value:("name"|"urgency"|"date"))=>{}});
 
 function App() {
+  
   const [tickets, setTickets] = useState<ITicket[]>(TicketsAvailable);
   
   const [user_id, setUserId] = useState<number>(0);
@@ -37,6 +38,11 @@ function App() {
   const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
   const [showModalDev, setShowModalDev] = useState<boolean>(false);
   const [showModalTag, setShowModalTag] = useState<boolean>(false);
+
+  useEffect(() => {
+    GetTicket(setTickets);
+    // setTickets(foo)
+  }, [])
 
   return (
     <>

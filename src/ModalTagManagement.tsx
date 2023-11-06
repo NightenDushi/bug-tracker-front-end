@@ -24,14 +24,15 @@ export function ModalTagManagement(props){
                 <div className="modal-body">
                     {tagsAvailableState.map((tag)=>
                         <div key={tag.id} className="nav mb-2">
-                            <TicketTags on={true} color={tag.color}>{tag.text}</TicketTags>
                             <input className="form-control w-25" value={tag.text}
                             onChange={(e)=>{RenameTags(tag.id, e.target.value, setTagsAvailableState)}}
                             onKeyDown={(e) => { if (e.key === 'Enter') { props.close() } }}></input>
                             
                             <ColorPicker color={tag.color} id={tag.id} changeColor={setTagsAvailableState}>
-                                <a href="#" className="text-danger align-self-center ms-auto"
-                                    onClick={()=>{if(tagsInTickets(props.tickets, tag.id)){setAlertModalSubject(tag.text);setAlertModalSubjectId(tag.id); setShowAlertModal(true)}
+                                <span className="ms-auto"><TicketTags on={true} color={tag.color}>{tag.text}</TicketTags></span>
+                                <a href="#" className="text-danger align-self-center"
+                                    onClick={()=>{if(tagsInTickets(props.tickets, tag.id))
+                                        {setAlertModalSubject(tag.text);setAlertModalSubjectId(tag.id); setShowAlertModal(true)}
                                     else RemoveTags(tag.id, setTagsAvailableState)}}> Remove </a>
                             </ColorPicker>
                         </div>

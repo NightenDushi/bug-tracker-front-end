@@ -1,11 +1,21 @@
+import { Dispatch, SetStateAction } from 'react'
 import { ITicket } from '../@types/tickets'
 import { CommentType } from '../@types/comment'
 import { ITags } from '../@types/tags'
-import { TagsAvailable } from '../const/TagsAvailable.tsx'
 
 let ticket_id_increment = 0;
 let comment_id_increment = 0;
 export let TicketsAvailable:ITicket[] = []
+
+export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
+    //NOTE: Backend code -> https://github.com/NightenDushi/bug-tracker-node-ts
+    const response = await fetch("http://localhost:3000/tickets");
+    TicketsAvailable = await response.json();
+    for (let i=0; i<TicketsAvailable.length; i++){
+        TicketsAvailable[i].dueDate = new Date(TicketsAvailable[i].dueDate as unknown as string);
+    }
+    pCallBack(TicketsAvailable);
+}
 
 export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
                         pPersonAssigned:number[], pDueDate:string="", pIsDone=false, pIsDraft=true,
@@ -20,6 +30,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
     TicketsAvailable = [...TicketsAvailable, NewTicket]
         
     ticket_id_increment += 1;
+
     pCallBack(TicketsAvailable)
 }
 
@@ -101,15 +112,3 @@ export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:n
     })
     pCallBack(TicketsAvailable)
 }
-
-AddTicket("Bug on the front page", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec scelerisque turpis at diam mattis vehicula. Aenean nec eros in lorem condimentum sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed orci eget ligula accumsan fringilla. Aliquam ultrices convallis gravida. Nulla facilisi. Integer leo arcu, volutpat ac enim at, fermentum pulvinar eros.",
-        1, [TagsAvailable[0],TagsAvailable[1]], [0],
-            "2023-11-01", false, false)
-AddTicket("Bad performance when reloading", "This is another test", 0, [TagsAvailable[0]], [1],
-            "", false, false)
-AddTicket("Test not passing", "This was a test", 0, [TagsAvailable[0], TagsAvailable[1]], [0],
-            "", true, false)
-AddTicket("UI qwirks", "This is a test", 2, [TagsAvailable[0], TagsAvailable[1]], [2],
-            "", false, false)
-AddTicket("Next feature", "I will publish this later", 0, [TagsAvailable[1]], [0],
-            "", false, true)
