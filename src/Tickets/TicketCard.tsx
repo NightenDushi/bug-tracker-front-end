@@ -19,6 +19,8 @@ function TicketCard(props:ITicket_props) {
     const {ticket, isUserAdmin, className, completedAction, setTickets} = props;
     const { id, isDone, isDraft, urgency, title, body, tags, person_assigned, dueDate, comments } = ticket
 
+    const MAXCHARACTERS_TICKETBODY = 64
+
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
     
@@ -46,7 +48,16 @@ function TicketCard(props:ITicket_props) {
                 <TicketTags key={tag.id} on={true} color={tag.color}>{tag.text}</TicketTags>
                 )}
         </ul>
-        <p className="card-text">{body}</p>
+        <p className="card-text">{(body.length<=MAXCHARACTERS_TICKETBODY)?body:(
+            function(){
+                //Parital display; cut the body at its last space before the limit
+                let last_space_index = MAXCHARACTERS_TICKETBODY
+                for (let i=0; i<MAXCHARACTERS_TICKETBODY; i++){
+                    if (body[i]==" ") last_space_index=i;
+                }
+                return body.slice(0,last_space_index)+"..."
+            }())
+            }</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
         <TicketDueDate dueDate={dueDate}/>

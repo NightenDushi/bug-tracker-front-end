@@ -102,7 +102,8 @@ export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:n
     pCallBack(TicketsAvailable)
 }
 
-AddTicket("Bug on the front page", "This is a test", 1, [TagsAvailable[0],TagsAvailable[1]], [0],
+AddTicket("Bug on the front page", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec scelerisque turpis at diam mattis vehicula. Aenean nec eros in lorem condimentum sodales. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sed orci eget ligula accumsan fringilla. Aliquam ultrices convallis gravida. Nulla facilisi. Integer leo arcu, volutpat ac enim at, fermentum pulvinar eros.",
+        1, [TagsAvailable[0],TagsAvailable[1]], [0],
             "2023-11-01", false, false)
 AddTicket("Bad performance when reloading", "This is another test", 0, [TagsAvailable[0]], [1],
             "", false, false)
