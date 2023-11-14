@@ -5,6 +5,7 @@ import { UserType } from './@types/user';
 import { ITicket } from './@types/tickets'
 import { ITags } from './@types/tags'
 import { TicketFilterType } from './@types/ticketfilter'
+import { DevType } from './@types/dev'
 
 import './App.css'
 import LoggedNavBar from './LoggedNavBar.tsx'
@@ -15,8 +16,8 @@ import { TicketFilter } from './TicketFilter.tsx';
 import { TicketCardWrapper } from './TicketCardWrapper.tsx';
 
 import { TicketsAvailable, AddTicket, GetTicket } from './const/TicketsAvailable.tsx'
-import { DevAvailable } from './const/DevAvailable.tsx'
-import { TagsAvailable } from './const/TagsAvailable.tsx'
+import { DevAvailable, GetDev } from './const/DevAvailable.tsx'
+import { TagsAvailable, GetTags } from './const/TagsAvailable.tsx'
 
 
 export const UserContext = createContext<UserType>({id:0, setId:(_value:number)=>{}});
@@ -25,9 +26,12 @@ export const TicketFilterContext = createContext<TicketFilterType>({isAdmin:fals
 function App() {
   
   const [tickets, setTickets] = useState<ITicket[]>(TicketsAvailable);
+  const [devs, setDevs] = useState<DevType[]>(DevAvailable);
   
-  const [user_id, setUserId] = useState<number>(0);
-  const user = DevAvailable.find((e)=>e.id==user_id)||DevAvailable[0];
+  const [user_id, setUserId] = useState<number>(1);
+  const [currentUser, setCurrentUser] = useState<DevType>({id:1,name:"", image:"", isAdmin:false});
+  
+  const [tags, setTags] = useState<DevType[]>(DevAvailable);
   
   const [showOnlyOwned, setOwned] = useState<number>(-1);
   const [showCompleted, setCompleted] = useState<boolean>(false);
@@ -41,24 +45,25 @@ function App() {
 
   useEffect(() => {
     GetTicket(setTickets);
-    // setTickets(foo)
+    GetDev(setDevs, setCurrentUser, user_id);
+    GetTags(setTags)
   }, [])
 
   return (
     <>
       <UserContext.Provider value={{id:user_id, setId:setUserId}}>
-        <LoggedNavBar isAdmin={user.isAdmin} setShowModalDev={()=>{setShowModalDev(true)}} setShowModalTag={()=>{setShowModalTag(true)}} />
+        <LoggedNavBar isAdmin={currentUser.isAdmin} setShowModalDev={()=>{setShowModalDev(true)}} setShowModalTag={()=>{setShowModalTag(true)}} />
         <div className="container grid">
           <h1>My tickets</h1>
-          {user.isAdmin && (<a href="#" className="btn btn-primary mb-3"
+          {currentUser.isAdmin && (<a href="#" className="btn btn-primary mb-3"
           onClick={()=>{setShowNewTicketModal(true);}}>
             Create a ticket
           </a>)}
-          <TicketFilterContext.Provider value={{isAdmin:user.isAdmin,
+          <TicketFilterContext.Provider value={{isAdmin:currentUser.isAdmin,
                                               showOnlyOwned:showOnlyOwned,showCompleted:showCompleted,showDraft:showDraft,sortOrder:sortOrder,
                                               setOnlyOwned:setOwned, setCompleted:setCompleted, setDraft:setDraft, setSortOrder:setSortOrder}}>
             <TicketFilter/>
-            <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={user.isAdmin}/>
+            <TicketCardWrapper tickets={tickets} setTickets={setTickets} isUserAdmin={currentUser.isAdmin}/>
           </TicketFilterContext.Provider>
         </div>
         {showModalDev && (

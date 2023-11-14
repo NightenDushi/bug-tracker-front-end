@@ -9,11 +9,14 @@ export let TicketsAvailable:ITicket[] = []
 
 export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
     //NOTE: Backend code -> https://github.com/NightenDushi/bug-tracker-node-ts
-    const response = await fetch("http://localhost:3000/tickets");
+    const response = await fetch("http://localhost:3000/ticket");
     TicketsAvailable = await response.json();
     for (let i=0; i<TicketsAvailable.length; i++){
-        TicketsAvailable[i].dueDate = new Date(TicketsAvailable[i].dueDate as unknown as string);
+        if (typeof(TicketsAvailable[i].dueDate)=="string"){
+            TicketsAvailable[i].dueDate = new Date((TicketsAvailable[i].dueDate as unknown as string).slice(0,10));
+        }
     }
+    // console.log(TicketsAvailable);
     pCallBack(TicketsAvailable);
 }
 

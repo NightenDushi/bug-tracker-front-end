@@ -7,8 +7,8 @@ export function DevAvatar(pProps:{dev:any, avatarFolder?:boolean, activated?:boo
     return (
     <>
     <span className={"position-relative d-inline-block devavatar "+(activated?"":props.deactivatedClass)} style={{width:40, height:40}}>
-        <img className={"img rounded-circle shadow"} width="40" height="40" alt={"Avatar of "+dev.name}
-        src={(useAvatarFolder?"/avatar/":"")+dev.image} />
+        <img className={"img rounded-circle shadow"} width="40" height="40" alt={"Avatar of "+dev?.name}
+        src={(useAvatarFolder?"/avatar/":"")+dev?.image} />
         {//Crown icon for the admin
         (dev?.isAdmin) && (<img src={crownIcon} className="position-absolute end-0 bottom-0" />)}
     </span>
