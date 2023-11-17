@@ -1,18 +1,30 @@
 import { Dispatch, SetStateAction } from 'react'
 import { ITags } from '../@types/tags'
 
-let tag_id_increment = 0;
-
 export let TagsAvailable: ITags[] = []
 
 export async function GetTags(pCallBack:Dispatch<SetStateAction<ITags[]>>){
-    const response = await fetch("http://localhost:3000/ticket");
+    const response = await fetch("http://localhost:3000/tag");
     TagsAvailable = await response.json();
     pCallBack(TagsAvailable)
 } 
 export function AddTags(pText:string, pColor:string, pCallBack=(_foo:ITags[])=>{}){
-    TagsAvailable = [...TagsAvailable, {id:tag_id_increment, text:pText, color:pColor}]
-    tag_id_increment += 1;
+    const NewTag:ITags = {id:-1, text:pText, color:pColor}
+    fetch("http://localhost:3000/tag", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(NewTag)
+    }).then((res)=>{
+        res.json().then((tag)=>{
+            TagsAvailable = [...TagsAvailable, tag]
+            pCallBack(TagsAvailable)
+        })
+    });
     pCallBack(TagsAvailable)
 }
 
@@ -34,6 +46,3 @@ export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
     TagsAvailable = TagsAvailable.filter((t)=>t.id !== pId)
     pCallBack(TagsAvailable)
 }
-
-AddTags("foo", "primary")
-AddTags("bar", "warning")

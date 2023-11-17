@@ -20,9 +20,22 @@ export async function GetDev(pCallBack:Dispatch<SetStateAction<DevType[]>>, pSet
 }
 
 export function AddDev(pName:string, pImage:string, pCallBack=(_foo:DevType[])=>{}, pAdmin=false){
-    DevAvailable = [...DevAvailable, {id:dev_id_increment, name:pName, image:pImage, isAdmin:pAdmin}]
-    dev_id_increment += 1;
-    pCallBack(DevAvailable)
+    const NewDev:DevType = {id:-1, name:pName, image:pImage, isAdmin:pAdmin}
+    fetch("http://localhost:3000/user", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(NewDev)
+    }).then((res)=>{
+        res.json().then((dev)=>{
+            DevAvailable = [...DevAvailable, dev]
+            pCallBack(DevAvailable)
+        })
+    });
 }
 export function RemoveDev(pDevId:number, pCallBack=(_foo:DevType[])=>{}){
     DevAvailable = DevAvailable.filter((d)=>d.id !== pDevId)

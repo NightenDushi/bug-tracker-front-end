@@ -31,7 +31,7 @@ function App() {
   const [user_id, setUserId] = useState<number>(1);
   const [currentUser, setCurrentUser] = useState<DevType>({id:1,name:"", image:"", isAdmin:false});
   
-  const [tags, setTags] = useState<DevType[]>(DevAvailable);
+  const [tags, setTags] = useState<ITags[]>(TagsAvailable);
   
   const [showOnlyOwned, setOwned] = useState<number>(-1);
   const [showCompleted, setCompleted] = useState<boolean>(false);

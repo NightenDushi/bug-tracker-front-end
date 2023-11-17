@@ -13,6 +13,18 @@ export interface ITicket{
     dueDate?:Date,
     comments:CommentType[];
   }
+export interface ITicketDatabase{
+    id:number,
+    isDone:boolean,
+    isDraft:boolean,
+    urgency:number,
+    title:string,
+    body:string,
+    tags:number[], //list of ids
+    person_assigned:number[],
+    dueDate?:Date,
+    comments:number[];
+  }
 
 export type ITicket_props = {
   ticket:ITicket;

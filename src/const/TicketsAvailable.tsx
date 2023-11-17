@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import { ITicket } from '../@types/tickets'
+import { ITicket, ITicketDatabase } from '../@types/tickets'
 import { CommentType } from '../@types/comment'
 import { ITags } from '../@types/tags'
 
@@ -23,18 +23,32 @@ export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
 export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
                         pPersonAssigned:number[], pDueDate:string="", pIsDone=false, pIsDraft=true,
                         pCallBack=(_foo:ITicket[])=>{}){
-    const NewTicket:ITicket = {id:ticket_id_increment,isDone:pIsDone, isDraft:pIsDraft, urgency:pUrgency,
-        title:pTitle, body:pBody,
-        tags:pTags,
-                                person_assigned:pPersonAssigned,
+    const NewTicket:ITicketDatabase = {id:ticket_id_increment,isDone:pIsDone, isDraft:pIsDraft, urgency:pUrgency,
+                                title:pTitle, body:pBody,
+                                tags:[], person_assigned:pPersonAssigned,
                                 comments:[]}
+    for (let i=0; i<pTags.length; i++){
+        NewTicket.tags.push(pTags[i].id);
+    }
     if (pDueDate!=="") NewTicket.dueDate = new Date(pDueDate);
     
-    TicketsAvailable = [...TicketsAvailable, NewTicket]
-        
-    ticket_id_increment += 1;
+    // TicketsAvailable = [...TicketsAvailable, NewTicket]
+    fetch("http://localhost:3000/ticket", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(NewTicket)
+    }).then((res)=>{
+        res.json().then((ticket)=>{
+            TicketsAvailable = [...TicketsAvailable, ticket]
+            pCallBack(TicketsAvailable)
+        })
+    });
 
-    pCallBack(TicketsAvailable)
 }
 
 export function ReplaceTicket(pId:number, pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
