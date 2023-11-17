@@ -25,10 +25,10 @@ export function ModalTagManagement(props){
                     {tagsAvailableState.map((tag)=>
                         <div key={tag.id} className="nav mb-2">
                             <input className="form-control w-25" value={tag.text}
-                            onChange={(e)=>{RenameTags(tag.id, e.target.value, setTagsAvailableState)}}
+                            onChange={(e)=>{RenameTags(tag, e.target.value, setTagsAvailableState)}}
                             onKeyDown={(e) => { if (e.key === 'Enter') { props.close() } }}></input>
                             
-                            <ColorPicker color={tag.color} id={tag.id} changeColor={setTagsAvailableState}>
+                            <ColorPicker tag={tag} changeColor={setTagsAvailableState}>
                                 <span className="ms-auto"><TicketTags on={true} color={tag.color}>{tag.text}</TicketTags></span>
                                 <a href="#" className="text-danger align-self-center"
                                     onClick={()=>{if(tagsInTickets(props.tickets, tag.id))
@@ -59,26 +59,26 @@ export function ModalTagManagement(props){
     </div>;
 }
 
-function ColorPicker(props){
+function ColorPicker(props:{tag:ITags,children:any,changeColor:(_:any)=>void}){
     const ColorAvailable:string[] = ["primary","success","info","warning","danger","dark"]
     const [open, setOpen] = useState<boolean>(false)
     return (open)?
             
             <>
-                <a className={"btn btn-"+ props.color} style={{width:40,height:40}} href="#" onClick={()=>{setOpen(false)}}></a>
+                <a className={"btn btn-"+ props.tag.color} style={{width:40,height:40}} href="#" onClick={()=>{setOpen(false)}}></a>
                 {ColorAvailable.map((c)=>{
-                    if (c !== props.color){
+                    if (c !== props.tag.color){
                         return (<a key={c} className={"btn btn-"+c} style={{width:40,height:40}} href="#"
                         onClick={()=>{
                             setOpen(false)
-                            RecolorTags(props.id, c, props.changeColor)
+                            RecolorTags(props.tag, c, props.changeColor)
                         }}></a>)
                     }
                 })
             }</>
             
             :<>
-            <a className={"btn btn-"+props.color} style={{width:40,height:40}} href="#" onClick={()=>{setOpen(true)}}></a>
+            <a className={"btn btn-"+props.tag.color} style={{width:40,height:40}} href="#" onClick={()=>{setOpen(true)}}></a>
             {props.children}
             </>
 }
@@ -86,7 +86,7 @@ function ColorPicker(props){
 function tagsInTickets(pTickets:ITicket[], pTagId:number){
     for (let i=0; i<pTickets.length; i++){
         for (let t=0; t<pTickets[i].tags.length; t++){
-            if (pTickets[i].tags[t].id == pTagId) return true
+            if (pTickets[i].tags[t] == pTagId) return true
         }
     }
     return false
@@ -97,7 +97,7 @@ function RemoveTagFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=
         const newTickets = pTickets.map((t)=>{
             const new_t:ITicket = Object.assign({}, t);
             for (let tags_index=0; tags_index<new_t.tags.length; tags_index++){
-                if (new_t.tags[tags_index].id==pTagId){
+                if (new_t.tags[tags_index]==pTagId){
                     new_t.tags.splice(tags_index, 1)
                 }
             }

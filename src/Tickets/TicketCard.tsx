@@ -44,9 +44,10 @@ function TicketCard(props:ITicket_props) {
           </div>
         </div>
         <ul className="nav d-flex mb-2">
-            {tags.map(tag=>
-                <TicketTags key={tag.id} on={true} color={tag.color}>{tag.text}</TicketTags>
-                )}
+            {tags.map(tagid=>{
+                const tag = TagsAvailable.find((t)=>t.id==tagid) as unknown as ITags;
+                return <TicketTags key={tagid} on={true} color={tag.color}>{tag.text}</TicketTags>
+                })}
         </ul>
         <p className="card-text">{(body.length<=MAXCHARACTERS_TICKETBODY)?body:(
             function(){
@@ -70,7 +71,7 @@ function TicketCard(props:ITicket_props) {
             tags={function(pTags){
                 //Convert the ITags[] into string[]
                 const TagsString:number[] = []
-                pTags.map((t)=>{TagsString.push(t.id)})
+                pTags.map((t)=>{TagsString.push(t)})
                 return TagsString;
             }(tags)}
             person_assigned={person_assigned}
@@ -84,12 +85,8 @@ function TicketCard(props:ITicket_props) {
 function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, ticketId:number) {
     return (pTitle: string, pBody: string, pUrgency: number, pActiveTags: number[],
             pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
-        const ticket_tags: ITags[] = [];
-        pActiveTags.map((t) => { ticket_tags.push(
-            TagsAvailable.find((tag)=>(t == tag.id)) as ITags //To avoid undefined warning
-        ); });
 
-        ReplaceTicket(ticketId, pTitle, pBody, pUrgency, ticket_tags, pActiveDev, pDueDate, pIsDraft, setTickets)
+        ReplaceTicket(ticketId, pTitle, pBody, pUrgency, pActiveTags, pActiveDev, pDueDate, pIsDraft, setTickets)
     };
 }
 function CompletedPublishBtn(props:{action:MouseEventHandler<HTMLAnchorElement>,isDraft:boolean,isDone:boolean}){

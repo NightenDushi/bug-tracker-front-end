@@ -8,7 +8,7 @@ export function TicketDueDate(props:TicketDueDateProps) {
     const DateString:(string|undefined) = props.dueDate?.toDateString();
     //1 > Today, 2 > Past
     const isDueDateTodayOrPast:number = (()=>{
-        if ((props.dueDate===undefined) || (props.dueDate > new Date())) return 0
+        if ((props.dueDate===undefined) || (props.dueDate===null) || (props.dueDate > new Date())) return 0
         const DateGap = (new Date().getTime() - props.dueDate.getTime())
         if (DateGap>86400000) return 2 // 86400000 = 24h
         return 1

@@ -38,7 +38,7 @@ export function ModalDevManagement(props) {
     const [showAlertModal, setShowAlertModal] = useState<boolean>(false)
     const [alertModalSubject, setAlertModalSubject] = useState<string>("")
     const [alertModalSubjectId, setAlertModalSubjectId] = useState<number>(0)
-
+    
     return <div className="modal d-block modal-background" id="exampleModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
             <div className="modal-content">
@@ -53,7 +53,7 @@ export function ModalDevManagement(props) {
                             <DevAvatar dev={dev} />
                             <input className="form-control ms-2"
                                 value={devNameCapitalized}
-                                onChange={(e) => {RenameDev(dev.id, e.target.value, setDevAvailableState)}}
+                                onChange={(e) => {RenameDev(dev, e.target.value, setDevAvailableState)}}
                                 onKeyDown={(e) => { if (e.key === 'Enter') { props.close() } }}>
                             </input>
                             
@@ -61,7 +61,7 @@ export function ModalDevManagement(props) {
                             (<>
                                 <div className="d-flex ms-2 align-self-end">
                                     <label htmlFor={"admin_"+dev.id} className="">Admin</label>
-                                    <input id={"admin_"+dev.id} className="form-check-input ms-1 me-2" type="checkbox" checked={dev.isAdmin} onChange={()=>{SetAdminDev(dev.id, !dev.isAdmin, setDevAvailableState)}}></input>
+                                    <input id={"admin_"+dev.id} className="form-check-input ms-1 me-2" type="checkbox" checked={dev.isAdmin} onChange={()=>{SetAdminDev(dev, !dev.isAdmin, setDevAvailableState)}}></input>
                                 </div>
                                 <a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
                                 onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}

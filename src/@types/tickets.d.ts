@@ -8,7 +8,7 @@ export interface ITicket{
     urgency:number,
     title:string,
     body:string,
-    tags:ITags[],
+    tags:number[],
     person_assigned:number[],
     dueDate?:Date,
     comments:CommentType[];

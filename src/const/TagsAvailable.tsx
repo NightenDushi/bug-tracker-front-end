@@ -27,20 +27,53 @@ export function AddTags(pText:string, pColor:string, pCallBack=(_foo:ITags[])=>{
     });
     pCallBack(TagsAvailable)
 }
+let RenameTagTimeOut:ReturnType<typeof setTimeout>;
+let LastTagRenamed:number;
+export function RenameTags(pTag:ITags, pNewName:string, pCallBack:(prevVar: (ITags[] | ((a:ITags[])=>ITags[]))) => void){
+    TagsAvailable = TagsAvailable.map((d)=>{
+        if (d.id===pTag.id) d.text = pNewName;
+        return d
+    })
+    pCallBack(TagsAvailable)
 
-export function RenameTags(pId:number, pNewName:string, pCallBack=(_foo:ITags[])=>{}){
-    TagsAvailable = TagsAvailable.map((t)=>{
-        if (t.id===pId) t.text = pNewName;
-        return t
-    })
-    pCallBack(TagsAvailable)
+    if (LastTagRenamed != pTag.id){
+        clearTimeout(RenameTagTimeOut);
+        LastTagRenamed=pTag.id;
+    }
+    RenameTagTimeOut = setTimeout(() => {
+        pTag.text = pNewName;
+        fetch("http://localhost:3000/tag/"+pTag.id, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pTag)
+        })
+    }, 500)
 }
-export function RecolorTags(pId:number, pNewColor:string, pCallBack=(_foo:ITags[])=>{}){
-    TagsAvailable = TagsAvailable.map((t)=>{
-        if (t.id===pId) t.color = pNewColor;
-        return t
-    })
-    pCallBack(TagsAvailable)
+export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[])=>{}){
+    pTag.color = pNewColor;
+    fetch("http://localhost:3000/tag/"+pTag.id, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pTag)
+    }).then((res)=>{
+        res.json().then((tag)=>{
+            TagsAvailable = TagsAvailable.map((t)=>{
+                if (t.id===tag.id) return tag;
+                return t
+            })
+            pCallBack(TagsAvailable)
+        })
+    });
 }
 export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
     TagsAvailable = TagsAvailable.filter((t)=>t.id !== pId)

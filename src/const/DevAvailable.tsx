@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
 import { DevType } from '../@types/dev';
-let dev_id_increment = 0;
 
 export let DevAvailable: DevType[] = [];
 
@@ -41,17 +40,53 @@ export function RemoveDev(pDevId:number, pCallBack=(_foo:DevType[])=>{}){
     DevAvailable = DevAvailable.filter((d)=>d.id !== pDevId)
     pCallBack(DevAvailable)
 }
-export function RenameDev(pDevId:number, pNewName:string, pCallBack:(prevVar: (DevType[] | ((a:DevType[])=>DevType[]))) => void){
+
+//NOTE(Nathan) This timeout is used to debounce the input's onchange event
+let RenameDevTimeOut:ReturnType<typeof setTimeout>;
+let LastDevRenamed:number; //Avoid clearing a timer when editing two different name in close interval
+export function RenameDev(pDev:DevType, pNewName:string, pCallBack:(prevVar: (DevType[] | ((a:DevType[])=>DevType[]))) => void){
     DevAvailable = DevAvailable.map((d)=>{
-        if (d.id===pDevId) d.name = pNewName;
+        if (d.id===pDev.id) d.name = pNewName;
         return d
     })
     pCallBack(DevAvailable)
+
+    if (LastDevRenamed != pDev.id){
+        clearTimeout(RenameDevTimeOut);
+        LastDevRenamed=pDev.id;
+    }
+    RenameDevTimeOut = setTimeout(() => {
+        pDev.name = pNewName;
+        fetch("http://localhost:3000/user/"+pDev.id, {
+            method: "PUT",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pDev)
+        })
+    }, 500)
 }
-export function SetAdminDev(pDevId:number, pNewAdminValue:boolean, pCallBack=(_foo:DevType[])=>{}){
-    DevAvailable = DevAvailable.map((d)=>{
-        if (d.id===pDevId) d.isAdmin = pNewAdminValue;
-        return d
-    })
-    pCallBack(DevAvailable)
+export function SetAdminDev(pDev:DevType, pNewAdminValue:boolean, pCallBack=(_foo:DevType[])=>{}){
+    pDev.isAdmin = pNewAdminValue;
+    fetch("http://localhost:3000/user/"+pDev.id, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pDev)
+    }).then((res)=>{
+        res.json().then((dev)=>{
+            DevAvailable = DevAvailable.map((d)=>{
+                if (d.id===dev.id) return dev;
+                return d
+            })
+            pCallBack(DevAvailable)
+        })
+    });
 }

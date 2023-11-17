@@ -51,7 +51,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
 
 }
 
-export function ReplaceTicket(pId:number, pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
+export function ReplaceTicket(pId:number, pTitle:string, pBody:string, pUrgency:number, pTags:number[], 
     pPersonAssigned:number[], pDueDate:string="", pIsDraft=true,
     pCallBack=(_foo:ITicket[])=>{}){
     TicketsAvailable = TicketsAvailable.map((t)=>{
