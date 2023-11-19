@@ -43,12 +43,12 @@ function TicketCompletedAction(pTicket: ITicket, setTickets:(prevVar: (ITicket[]
     return (e: MouseEvent) => {
         e.preventDefault();
         if (pTicket.isDraft){
-          PublishTicket(pTicket.id, setTickets)
+          PublishTicket(pTicket, setTickets)
           return
         } 
 
-        if (pTicket.isDone) MarkcompleteTicket(pTicket.id, setTickets, false)
-        else MarkcompleteTicket(pTicket.id, setTickets)
+        if (pTicket.isDone) MarkcompleteTicket(pTicket, setTickets, false)
+        else MarkcompleteTicket(pTicket, setTickets)
     };
 }
 

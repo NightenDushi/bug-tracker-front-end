@@ -34,21 +34,25 @@ function TicketCard(props:ITicket_props) {
         <div className="d-flex align-items-center justify-content-between">
             <h5 className="card-title">{title}</h5>
             <div>
-              {person_assigned.map((dev_id)=>{
+              {//NOTE(Nathan) We check for the length because the array is empty until
+              //the database query is completed; and .find() returns undefined.
+              //    > Apply for the tags as well
+              DevAvailable.length>0 && (person_assigned.map((dev_id)=>{
                     const dev = DevAvailable.find((e)=> e.id == dev_id)
                     return (
-                        <span key={dev?.id} className="me-2">
+                        <span key={dev_id} className="me-2">
                             <DevAvatar dev={dev} activated={true} />
                         </span>)
-                })}
+                }))}
           </div>
         </div>
-        <ul className="nav d-flex mb-2">
+
+        {TagsAvailable.length>0 && (<ul className="nav d-flex mb-2">
             {tags.map(tagid=>{
                 const tag = TagsAvailable.find((t)=>t.id==tagid) as unknown as ITags;
                 return <TicketTags key={tagid} on={true} color={tag.color}>{tag.text}</TicketTags>
                 })}
-        </ul>
+        </ul>)}
         <p className="card-text">{(body.length<=MAXCHARACTERS_TICKETBODY)?body:(
             function(){
                 //Parital display; cut the body at its last space before the limit
@@ -76,17 +80,17 @@ function TicketCard(props:ITicket_props) {
             }(tags)}
             person_assigned={person_assigned}
             actionTicketModal={
-                (isUserAdmin)?editTicketAction(setTickets, id):completedAction}
+                (isUserAdmin)?editTicketAction(setTickets, ticket):completedAction}
             setTickets={setTickets}
         />)}
     </div>)
 }
 
-function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, ticketId:number) {
+function editTicketAction(setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void, pTicket:ITicket) {
     return (pTitle: string, pBody: string, pUrgency: number, pActiveTags: number[],
             pIsDraft: boolean, pActiveDev: number[], pDueDate: string) => {
 
-        ReplaceTicket(ticketId, pTitle, pBody, pUrgency, pActiveTags, pActiveDev, pDueDate, pIsDraft, setTickets)
+        ReplaceTicket(pTicket, pTitle, pBody, pUrgency, pActiveTags, pActiveDev, pDueDate, pIsDraft, setTickets)
     };
 }
 function CompletedPublishBtn(props:{action:MouseEventHandler<HTMLAnchorElement>,isDraft:boolean,isDone:boolean}){

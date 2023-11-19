@@ -16,7 +16,6 @@ export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
             TicketsAvailable[i].dueDate = new Date((TicketsAvailable[i].dueDate as unknown as string).slice(0,10));
         }
     }
-    // console.log(TicketsAvailable);
     pCallBack(TicketsAvailable);
 }
 
@@ -51,42 +50,56 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
 
 }
 
-export function ReplaceTicket(pId:number, pTitle:string, pBody:string, pUrgency:number, pTags:number[], 
+export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrgency:number, pTags:number[], 
     pPersonAssigned:number[], pDueDate:string="", pIsDraft=true,
     pCallBack=(_foo:ITicket[])=>{}){
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pId){
-            t.isDraft = pIsDraft;
-            t.urgency = pUrgency;
-            t.title = pTitle;
-            t.body = pBody;
-            t.tags = pTags;
-            t.person_assigned = pPersonAssigned;
-            if (pDueDate!=="") t.dueDate = new Date(pDueDate)
-            else t.dueDate = undefined;
-        }
-        return t
-    })
-    pCallBack(TicketsAvailable)
+
+    pTicket = {"id":pTicket.id,
+                "isDone":pTicket.isDone,
+                "comments":pTicket.comments,
+
+                "isDraft": pIsDraft,
+                "urgency": pUrgency,
+                "title": pTitle,
+                "body": pBody,
+                "tags": pTags,
+                "person_assigned": pPersonAssigned,
+                "dueDate":(pDueDate!=="")? new Date(pDueDate):undefined,
+                }
+
+    SendSingleTicket(pTicket, pCallBack);
     
 }
-export function MarkcompleteTicket(pId:number, pCallBack=(_foo:ITicket[])=>{}, pIsDone=true){
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pId){
-            t.isDone = pIsDone;
-        }
-        return t
-    })
-    pCallBack(TicketsAvailable)
+export function MarkcompleteTicket(pTicket:ITicket, pCallBack=(_foo:ITicket[])=>{}, pIsDone=true){
+    pTicket.isDone = pIsDone;
+
+    SendSingleTicket(pTicket, pCallBack);
 }
-export function PublishTicket(pId:number, pCallBack=(_foo:ITicket[])=>{}){
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pId){
-            t.isDraft = false;
-        }
-        return t
-    })
-    pCallBack(TicketsAvailable)
+export function PublishTicket(pTicket:ITicket, pCallBack=(_foo:ITicket[])=>{}){
+    pTicket.isDraft = false;
+
+    SendSingleTicket(pTicket, pCallBack);
+}
+
+function SendSingleTicket(pTicket: ITicket, pCallBack: (_foo: ITicket[]) => void) {
+    fetch("http://localhost:3000/ticket/" + pTicket.id, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pTicket)
+    }).then((res) => {
+        res.json().then((ticket) => {
+            TicketsAvailable = TicketsAvailable.map((t) => {
+                if (t.id == ticket.id) return ticket;
+                return t;
+            });
+            pCallBack(TicketsAvailable);
+        });
+    });
 }
 
 export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
