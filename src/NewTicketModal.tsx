@@ -10,6 +10,8 @@ import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
 import { TicketTags } from './Tickets/TicketTags.tsx';
 
+import { AlertModal } from './AlertModal.tsx';
+
 import Interval from './utils/interval.ts'
 
 import heartIcon from './assets/heart-solid.svg';
@@ -46,6 +48,8 @@ export function NewTicketModal(props:NewTicketModalProps) {
   const [activeDev, setActiveDev] = useState<number[]>(props?.person_assigned||[])
   
   const [dueDate, setDueDate] = useState<string>(props?.dueDate||"")
+
+  const [showAlertModal, setShowAlertModal] = useState<boolean>(false);
 
   const addticket = (e:(KeyboardEvent|MouseEvent))=>{
         if (isAdmin) {props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev, dueDate); props.close()}
@@ -122,7 +126,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
         </div>
 
         <div className="modal-footer">
-          {props.ticket_id!==undefined && (<a href="#" className="text-danger me-auto" onClick={()=>{RemoveTicket(props.ticket_id as number, props.setTickets)}}>Delete</a>)}
+          {props.ticket_id!==undefined && (<a href="#" className="text-danger me-auto" onClick={()=>{setShowAlertModal(true);}}>Delete</a>)}
           <label>Keep as draft</label>
           <input type="checkbox" checked={isDraft}
                 onChange={()=>{setDraft(!isDraft)}}></input>
@@ -135,6 +139,13 @@ export function NewTicketModal(props:NewTicketModalProps) {
         (<CommentSection ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
       </div>
     </div>
+    {showAlertModal && (<AlertModal title={"Warning"} body={"Are you sure you want to delete this ticket?"}
+    close={()=>{setShowAlertModal(false)}} 
+    ok={()=>{
+      RemoveTicket(props.ticket_id as number, props.setTickets);
+      setShowAlertModal(false);
+    }}
+    />)}
   </div>;
 
   //Not admin, Read-only view
