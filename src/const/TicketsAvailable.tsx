@@ -50,6 +50,23 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
 
 }
 
+export function RemoveTicket(pTicketId:number, pCallBack=(_foo:ITicket[])=>{}){
+    fetch("http://localhost:3000/ticket/"+ pTicketId, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+        "Content-Type": "application/json",
+        },
+    }).then((res)=>{
+        res.json().then((tickets)=>{
+            TicketsAvailable = tickets;
+            pCallBack(TicketsAvailable)
+        })
+    });
+}
+
 export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrgency:number, pTags:number[], 
     pPersonAssigned:number[], pDueDate:string="", pIsDraft=true,
     pCallBack=(_foo:ITicket[])=>{}){

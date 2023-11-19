@@ -4,7 +4,7 @@ import { ITicket } from './@types/tickets'
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
-import { TicketsAvailable, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
+import { TicketsAvailable, RemoveTicket, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
 
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
@@ -122,6 +122,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
         </div>
 
         <div className="modal-footer">
+          {props.ticket_id!==undefined && (<a href="#" className="text-danger me-auto" onClick={()=>{RemoveTicket(props.ticket_id as number, props.setTickets)}}>Delete</a>)}
           <label>Keep as draft</label>
           <input type="checkbox" checked={isDraft}
                 onChange={()=>{setDraft(!isDraft)}}></input>
