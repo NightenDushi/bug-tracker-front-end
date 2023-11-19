@@ -10,7 +10,6 @@ export let DevAvailable: DevType[] = [];
 export async function GetDev(pCallBack:Dispatch<SetStateAction<DevType[]>>, pSetCurrentUser:Dispatch<SetStateAction<DevType>>, pUserId:number){
     const response = await fetch("http://localhost:3000/user");
     DevAvailable = await response.json();
-    // console.log(DevAvailable)
 
     const loggedUser = DevAvailable.find((e)=>e.id==pUserId)||DevAvailable[0];
     pSetCurrentUser(loggedUser)
@@ -37,8 +36,17 @@ export function AddDev(pName:string, pImage:string, pCallBack=(_foo:DevType[])=>
     });
 }
 export function RemoveDev(pDevId:number, pCallBack=(_foo:DevType[])=>{}){
-    DevAvailable = DevAvailable.filter((d)=>d.id !== pDevId)
-    pCallBack(DevAvailable)
+    fetch("http://localhost:3000/user/"+pDevId, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin", // include, *same-origin, omit
+    }).then((res)=>{
+        res.json().then((devs)=>{
+            DevAvailable = devs;
+            pCallBack(DevAvailable)
+        })
+    });
 }
 
 //NOTE(Nathan) This timeout is used to debounce the input's onchange event

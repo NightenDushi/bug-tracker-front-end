@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DevAvailable, AddDev, RemoveDev, RenameDev, SetAdminDev } from './const/DevAvailable.tsx';
+import { TicketsAvailable, ReplaceTicket } from './const/TicketsAvailable.tsx';
 
 import { AlertModal } from './AlertModal.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
@@ -17,18 +18,13 @@ function userInTickets(pTickets:ITicket[], pUserId:number){
 }
 
 function RemoveDevFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void, pDevId:number){
-    pSetTickets((pTickets:ITicket[])=>{
-        const newTickets = pTickets.map((t)=>{
-            const new_t:ITicket = Object.assign({}, t);
-            if (new_t.person_assigned.includes(pDevId)){
-                const removedDevIndex = new_t.person_assigned.indexOf(pDevId)
-                new_t.person_assigned.splice(removedDevIndex, 1);
-            }
-
-            return new_t
-
-        }) 
-        return newTickets
+    TicketsAvailable.map((t)=>{
+        if (t.person_assigned.includes(pDevId)){
+            const removedDevIndex = t.person_assigned.indexOf(pDevId)
+            t.person_assigned.splice(removedDevIndex, 1);
+            ReplaceTicket(t, t.title, t.body, t.urgency, t.tags, t.person_assigned,
+                                t.dueDate?.toDateString(), t.isDraft, pSetTickets)
+        }
     })
 }
 
