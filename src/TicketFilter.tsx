@@ -1,13 +1,14 @@
 import { useContext } from 'react';
-import { TicketFilterContext } from './App.tsx';
+import { TicketFilterContext,UserContext } from './App.tsx';
 
 
-export function TicketFilter(props) {
+export function TicketFilter() {
   const {isAdmin ,showOnlyOwned, showCompleted, showDraft, sortOrder, setOnlyOwned, setCompleted, setDraft, setSortOrder } = useContext(TicketFilterContext);
+  const { id } = useContext(UserContext)
   return <ul className="nav bg-clear shadow mb-3 rounded-2 p-3 align-items-center">
     <li className="nav-item me-3">
       <label className="me-1" htmlFor="owned">Show only my issues</label>
-      <input type="checkbox" className="form-check-input" id="owned" name="owned" checked={(showOnlyOwned !== -1)} onChange={() => { if (showOnlyOwned==-1) {setOnlyOwned(props.user_id)} else setOnlyOwned(-1) }}></input>
+      <input type="checkbox" className="form-check-input" id="owned" name="owned" checked={(showOnlyOwned !== -1)} onChange={() => { if (showOnlyOwned==-1) {setOnlyOwned(id)} else setOnlyOwned(-1) }}></input>
     </li>
     {isAdmin && (<li className="nav-item me-3">
       <label className="me-1" htmlFor="draft">Show Drafts</label>
