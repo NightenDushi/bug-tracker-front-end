@@ -65,7 +65,7 @@ function TicketCard(props:ITicket_props) {
             }</p>
         <CompletedPublishBtn isDraft={isDraft} isDone={isDone} action={completedAction}/>
         <a href="#" className="btn btn-primary" onClick={()=>{setShowNewTicketModal(true)}}>More...</a>
-        <TicketDueDate dueDate={dueDate}/>
+        {(dueDate!==undefined && dueDate!==null) && (<TicketDueDate dueDate={dueDate}/>)}
         </div>
         {showNewTicketModal&&
         (<NewTicketModal close={()=>{setShowNewTicketModal(false)}}

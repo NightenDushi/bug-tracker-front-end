@@ -2,10 +2,10 @@ import clockIcon from '../assets/clock-regular.svg';
 import Interval from '../utils/interval.ts';
 
 interface TicketDueDateProps {
-    dueDate:(Date|undefined)
+    dueDate:Date
 }
 export function TicketDueDate(props:TicketDueDateProps) {
-    const DateString:(string|undefined) = props.dueDate?.toDateString();
+    const DateString:string = props.dueDate.toDateString();
     //1 > Today, 2 > Past
     const isDueDateTodayOrPast:number = (()=>{
         if ((props.dueDate===undefined) || (props.dueDate===null) || (props.dueDate > new Date())) return 0

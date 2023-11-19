@@ -11,12 +11,22 @@ export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
     //NOTE: Backend code -> https://github.com/NightenDushi/bug-tracker-node-ts
     const response = await fetch("http://localhost:3000/ticket");
     TicketsAvailable = await response.json();
-    for (let i=0; i<TicketsAvailable.length; i++){
-        if (typeof(TicketsAvailable[i].dueDate)=="string"){
-            TicketsAvailable[i].dueDate = new Date((TicketsAvailable[i].dueDate as unknown as string).slice(0,10));
-        }
-    }
+    TicketsAvailable = ParseTicketsDatabase(TicketsAvailable);
+    
     pCallBack(TicketsAvailable);
+}
+
+function ParseTicketsDatabase(pTickets:any[]){
+    for (let i=0; i<pTickets.length; i++){
+        ParseTicketDatabase(pTickets[i])
+    }
+    return pTickets
+}
+function ParseTicketDatabase(pTicket:any){
+    if (typeof(pTicket.dueDate) == "string"){
+        pTicket.dueDate = new Date((pTicket.dueDate as unknown as string).slice(0,10));
+    }
+    return pTicket
 }
 
 export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
@@ -43,7 +53,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
         body: JSON.stringify(NewTicket)
     }).then((res)=>{
         res.json().then((ticket)=>{
-            TicketsAvailable = [...TicketsAvailable, ticket]
+            TicketsAvailable = [...TicketsAvailable, ParseTicketDatabase(ticket)]
             pCallBack(TicketsAvailable)
         })
     });
@@ -56,12 +66,9 @@ export function RemoveTicket(pTicketId:number, pCallBack=(_foo:ITicket[])=>{}){
         mode: "cors",
         cache: "no-cache",
         credentials: "same-origin", // include, *same-origin, omit
-        headers: {
-        "Content-Type": "application/json",
-        },
     }).then((res)=>{
         res.json().then((tickets)=>{
-            TicketsAvailable = tickets;
+            TicketsAvailable = ParseTicketsDatabase(tickets);
             pCallBack(TicketsAvailable)
         })
     });
@@ -111,7 +118,7 @@ function SendSingleTicket(pTicket: ITicket, pCallBack: (_foo: ITicket[]) => void
     }).then((res) => {
         res.json().then((ticket) => {
             TicketsAvailable = TicketsAvailable.map((t) => {
-                if (t.id == ticket.id) return ticket;
+                if (t.id == ticket.id) return ParseTicketDatabase(ticket);
                 return t;
             });
             pCallBack(TicketsAvailable);
