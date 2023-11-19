@@ -5,6 +5,7 @@ import { ITicket } from './@types/tickets'
 
 import { TicketTags } from './Tickets/TicketTags'
 import { TagsAvailable, AddTags, RemoveTags, RenameTags, RecolorTags } from './const/TagsAvailable.tsx'
+import { TicketsAvailable, ReplaceTicket } from './const/TicketsAvailable.tsx'
 import { AlertModal } from './AlertModal.tsx';
 
 export function ModalTagManagement(props){
@@ -51,7 +52,7 @@ export function ModalTagManagement(props){
         {showAlertModal && (<AlertModal title={"Warning"} body={"The tag "+alertModalSubject+" is assigned to one or more tickets. Are you sure you want to remove this tag?"}
             close={()=>{setShowAlertModal(false)}} 
             ok={()=>{
-                RemoveTagFromTickets(props.setTickets, alertModalSubjectId)
+                RemoveTagFromTickets(alertModalSubjectId, props.setTickets)
                 RemoveTags(alertModalSubjectId, setTagsAvailableState);
                 setShowAlertModal(false);
             }}
@@ -92,18 +93,13 @@ function tagsInTickets(pTickets:ITicket[], pTagId:number){
     return false
 }
 
-function RemoveTagFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void, pTagId:number){
-    pSetTickets((pTickets)=>{
-        const newTickets = pTickets.map((t)=>{
-            const new_t:ITicket = Object.assign({}, t);
-            for (let tags_index=0; tags_index<new_t.tags.length; tags_index++){
-                if (new_t.tags[tags_index]==pTagId){
-                    new_t.tags.splice(tags_index, 1)
-                }
-            }
-            return new_t
-
-        }) 
-        return newTickets
+function RemoveTagFromTickets(pTagId:number, pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=>ITicket[]))) => void){
+    TicketsAvailable.map((t)=>{
+        if (t.tags.includes(pTagId)){
+            const removedTagIndex = t.tags.indexOf(pTagId)
+            t.tags.splice(removedTagIndex, 1);
+            ReplaceTicket(t, t.title, t.body, t.urgency, t.tags, t.person_assigned,
+                                t.dueDate?.toDateString(), t.isDraft, pSetTickets)
+        }
     })
 }

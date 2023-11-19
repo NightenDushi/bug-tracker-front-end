@@ -76,6 +76,15 @@ export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[
     });
 }
 export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
-    TagsAvailable = TagsAvailable.filter((t)=>t.id !== pId)
-    pCallBack(TagsAvailable)
+    fetch("http://localhost:3000/tag/"+pId, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin"
+    }).then((res)=>{
+        res.json().then((tags)=>{
+            TagsAvailable = tags;
+            pCallBack(TagsAvailable)
+        })
+    });
 }
