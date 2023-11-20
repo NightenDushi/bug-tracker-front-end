@@ -1,10 +1,11 @@
-import { useState, useContext, MouseEvent, KeyboardEvent} from 'react';
+import { useState, useContext, useEffect, MouseEvent, KeyboardEvent} from 'react';
 import { UserContext } from './App.tsx';
 import { ITicket } from './@types/tickets'
+import { CommentType } from './@types/comment'
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
-import { TicketsAvailable, RemoveTicket, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
+import { TicketsAvailable, RemoveTicket, GetComments, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
 
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';
@@ -28,6 +29,7 @@ type NewTicketModalProps = {
   tags?:number[],
   person_assigned?:number[],
   dueDate?:string,
+  comments_number?:number,
   close:()=>void,
   actionTicketModal:(...args:any)=>void,
   setTickets?:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void,
@@ -55,6 +57,15 @@ export function NewTicketModal(props:NewTicketModalProps) {
         if (isAdmin) {props.actionTicketModal(title, body, urgency, activeTags, isDraft, activeDev, dueDate); props.close()}
         else props.actionTicketModal(e)
     }
+
+  const [comments, setComments] = useState<CommentType[]>([])
+  useEffect(() => {
+    if (props.ticket_id!==undefined) {
+      console.log("foo "+props.ticket_id)
+      GetComments(props.ticket_id, setComments)
+    };
+  }, [])
+  console.log(comments)
 
 
   if (isAdmin) return <div className="modal d-block modal-background" tabIndex={-1} role="dialog">
@@ -135,8 +146,9 @@ export function NewTicketModal(props:NewTicketModalProps) {
           >{(props.ticket_id===undefined)?"Create":"Update"}</button>
           <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&
-        (<CommentSection ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined
+      && comments.length>0)&&
+        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
       </div>
     </div>
     {showAlertModal && (<AlertModal title={"Warning"} body={"Are you sure you want to delete this ticket?"}
@@ -190,25 +202,27 @@ export function NewTicketModal(props:NewTicketModalProps) {
             <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={addticket}>Completed</button>
             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={props.close}>Close</button>
         </div>
-      {(props.ticket_id!==undefined && props.setTickets!==undefined)&&
-        (<CommentSection ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
+      {(props.ticket_id!==undefined && props.setTickets!==undefined
+      && comments.length>0) &&
+        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
       </div>
     </div>
   </div>;
 }
 
 
-function CommentSection(props:{ticketId:number, userId:number, userIsAdmin:boolean, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
-  const { comments } = TicketsAvailable.find((t)=>t.id==props.ticketId) as ITicket
+function CommentSection(props:{comments:CommentType[], ticketId:number, userId:number, userIsAdmin:boolean, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
   const [commentFieldText, setCommentFieldText] = useState<string>("");
   const [seeMore, setSeeMore] = useState<boolean>(false);
   
+  const { comments, ticketId, userId, userIsAdmin, setTickets } = props;
+
   const DEFAULT_DISPLAYED_COMMENTS = 3;
-  const SendComment = ()=>{AddCommentTicket(props.userId, props.ticketId, commentFieldText,props.setTickets);setCommentFieldText("")}
+  const SendComment = ()=>{setCommentFieldText("")}
   return (<div className="container p-2">
             <p>Comments on this post : {comments.length}</p>
             <div className="d-flex">
-              <DevAvatar dev={DevAvailable.find((d)=>d.id==props.userId)} />
+              <DevAvatar dev={DevAvailable.find((d)=>d.id==userId)} />
               <input className="ms-2 form-control" placeholder="Type your comment here"
                     value={commentFieldText} onChange={(e)=>{setCommentFieldText(e.target.value)}}
                     onKeyDown={(e) => { if (e.key === 'Enter' && commentFieldText.length>0) {SendComment()} }}></input>
@@ -220,10 +234,10 @@ function CommentSection(props:{ticketId:number, userId:number, userIsAdmin:boole
                   if (Math.abs(comments.length-1-c_index)<DEFAULT_DISPLAYED_COMMENTS || seeMore){
                     return (
                       <Comment key={c.id} dev={DevAvailable.find((d)=>d.id==c.senderId)} text={c.body}
-                            liked={c.likes.includes(props.userId)} likes_number={c.likes.length}
-                            date={c.date} currentUserId={props.userId} currentUserIsAdmin={props.userIsAdmin}
-                            likeAction={()=>{LikeCommentTicket(props.userId, props.ticketId, c.id, props.setTickets)}}
-                            removeAction={()=>{RemoveCommentTicket(props.ticketId, c.id, props.setTickets)}}/>
+                            liked={c.likes.includes(userId)} likes_number={c.likes.length}
+                            date={c.date} currentUserId={userId} currentUserIsAdmin={userIsAdmin}
+                            likeAction={()=>{LikeCommentTicket(userId, ticketId, c.id, setTickets)}}
+                            removeAction={()=>{RemoveCommentTicket(ticketId, c.id, setTickets)}}/>
                     )
                   }
                 }).reverse()

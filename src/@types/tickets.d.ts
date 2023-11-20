@@ -11,7 +11,7 @@ export interface ITicket{
     tags:number[],
     person_assigned:number[],
     dueDate?:Date,
-    comments:CommentType[];
+    comments_number:number;
   }
 export interface ITicketDatabase{
     id:number,
@@ -22,8 +22,7 @@ export interface ITicketDatabase{
     body:string,
     tags:number[], //list of ids
     person_assigned:number[],
-    dueDate?:Date,
-    comments:number[];
+    dueDate?:Date
   }
 
 export type ITicket_props = {

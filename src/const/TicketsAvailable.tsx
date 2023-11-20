@@ -12,7 +12,7 @@ export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
     const response = await fetch("http://localhost:3000/ticket");
     TicketsAvailable = await response.json();
     TicketsAvailable = ParseTicketsDatabase(TicketsAvailable);
-    
+    console.log(TicketsAvailable)
     pCallBack(TicketsAvailable);
 }
 
@@ -34,8 +34,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
                         pCallBack=(_foo:ITicket[])=>{}){
     const NewTicket:ITicketDatabase = {id:ticket_id_increment,isDone:pIsDone, isDraft:pIsDraft, urgency:pUrgency,
                                 title:pTitle, body:pBody,
-                                tags:[], person_assigned:pPersonAssigned,
-                                comments:[]}
+                                tags:[], person_assigned:pPersonAssigned}
     for (let i=0; i<pTags.length; i++){
         NewTicket.tags.push(pTags[i].id);
     }
@@ -78,9 +77,8 @@ export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrg
     pPersonAssigned:number[], pDueDate:string="", pIsDraft=true,
     pCallBack=(_foo:ITicket[])=>{}){
 
-    pTicket = {"id":pTicket.id,
+    const NewTicket:ITicketDatabase = {"id":pTicket.id,
                 "isDone":pTicket.isDone,
-                "comments":pTicket.comments,
 
                 "isDraft": pIsDraft,
                 "urgency": pUrgency,
@@ -91,21 +89,21 @@ export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrg
                 "dueDate":(pDueDate!=="")? new Date(pDueDate):undefined,
                 }
 
-    SendSingleTicket(pTicket, pCallBack);
+    SendSingleTicket(NewTicket, pCallBack);
     
 }
-export function MarkcompleteTicket(pTicket:ITicket, pCallBack=(_foo:ITicket[])=>{}, pIsDone=true){
+export function MarkcompleteTicket(pTicket:ITicketDatabase, pCallBack=(_foo:ITicket[])=>{}, pIsDone=true){
     pTicket.isDone = pIsDone;
 
     SendSingleTicket(pTicket, pCallBack);
 }
-export function PublishTicket(pTicket:ITicket, pCallBack=(_foo:ITicket[])=>{}){
+export function PublishTicket(pTicket:ITicketDatabase, pCallBack=(_foo:ITicket[])=>{}){
     pTicket.isDraft = false;
 
     SendSingleTicket(pTicket, pCallBack);
 }
 
-function SendSingleTicket(pTicket: ITicket, pCallBack: (_foo: ITicket[]) => void) {
+function SendSingleTicket(pTicket: ITicketDatabase, pCallBack: (_foo: ITicket[]) => void) {
     fetch("http://localhost:3000/ticket/" + pTicket.id, {
         method: "PUT",
         mode: "cors",
@@ -126,12 +124,19 @@ function SendSingleTicket(pTicket: ITicket, pCallBack: (_foo: ITicket[]) => void
     });
 }
 
+
+export async function GetComments(pTicketId:number, pCallBack=(_foo:CommentType[])=>{}){
+    const response = await fetch("http://localhost:3000/comment?ticket_id="+pTicketId);
+    const comments = await response.json();
+    console.log(comments)
+    pCallBack(comments);
+}
 export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
                                 pCallBack=(_foo:ITicket[])=>{}){
     const newComment:CommentType = {id:comment_id_increment, senderId:pUserId, body:pText, date:new Date(), likes:[]}
     TicketsAvailable = TicketsAvailable.map((t)=>{
         if (t.id==pTicketId){
-            t.comments.push(newComment);
+            // t.comments.push(newComment);
         }
         return t
     })
@@ -143,7 +148,7 @@ export function RemoveCommentTicket(pTicketId:number, pCommentId:number,
                                     pCallBack=(_foo:ITicket[])=>{}){
     TicketsAvailable = TicketsAvailable.map((t)=>{
         if (t.id==pTicketId){
-            t.comments = t.comments.filter((c)=>(c.id!==pCommentId))
+            // t.comments = t.comments.filter((c)=>(c.id!==pCommentId))
         }
         return t
     })
@@ -153,14 +158,14 @@ export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:n
     pCallBack=(_foo:ITicket[])=>{}){
     TicketsAvailable = TicketsAvailable.map((t)=>{
         if (t.id==pTicketId){
-            for (let i=0; i<t.comments.length; i++){
-                if (t.comments[i].id == pCommentId){
-                    //Remove or add the user id to the like list
-                    if (!t.comments[i].likes.includes(pUserId)) t.comments[i].likes.push(pUserId)
-                    else t.comments[i].likes = t.comments[i].likes.filter((ids:number)=>ids!=pUserId)
-                    break;
-                }
-            }
+            // for (let i=0; i<t.comments.length; i++){
+            //     if (t.comments[i].id == pCommentId){
+            //         //Remove or add the user id to the like list
+            //         if (!t.comments[i].likes.includes(pUserId)) t.comments[i].likes.push(pUserId)
+            //         else t.comments[i].likes = t.comments[i].likes.filter((ids:number)=>ids!=pUserId)
+            //         break;
+            //     }
+            // }
         }
         return t
     })
