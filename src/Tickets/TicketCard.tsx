@@ -23,8 +23,6 @@ function TicketCard(props:ITicket_props) {
 
     //TODO(Nathan) Move this to a new file
     const [showNewTicketModal, setShowNewTicketModal] = useState<boolean>(false)
-
-    console.log(comments_number)
     
     return (
     <div className='card col-sm-6 col-md-6 col-lg-4'>

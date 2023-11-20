@@ -12,7 +12,6 @@ export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
     const response = await fetch("http://localhost:3000/ticket");
     TicketsAvailable = await response.json();
     TicketsAvailable = ParseTicketsDatabase(TicketsAvailable);
-    console.log(TicketsAvailable)
     pCallBack(TicketsAvailable);
 }
 
@@ -128,7 +127,6 @@ function SendSingleTicket(pTicket: ITicketDatabase, pCallBack: (_foo: ITicket[])
 export async function GetComments(pTicketId:number, pCallBack=(_foo:CommentType[])=>{}){
     const response = await fetch("http://localhost:3000/comment?ticket_id="+pTicketId);
     const comments = await response.json();
-    console.log(comments)
     pCallBack(comments);
 }
 export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
