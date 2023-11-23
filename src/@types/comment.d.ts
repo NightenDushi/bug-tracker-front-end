@@ -1,7 +1,8 @@
 export type CommentType = {
     id:number,
+    ticketId:number,
     senderId:number,
     body:string,
-    date:Date,
+    date:string,
     likes:number[]
 }

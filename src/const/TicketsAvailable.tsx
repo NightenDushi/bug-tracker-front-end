@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, } from 'react'
 import { ITicket, ITicketDatabase } from '../@types/tickets'
 import { CommentType } from '../@types/comment'
 import { ITags } from '../@types/tags'
@@ -130,42 +130,56 @@ export async function GetComments(pTicketId:number, pCallBack=(_foo:CommentType[
     pCallBack(comments);
 }
 export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
-                                pCallBack=(_foo:ITicket[])=>{}){
-    const newComment:CommentType = {id:comment_id_increment, senderId:pUserId, body:pText, date:new Date(), likes:[]}
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pTicketId){
-            // t.comments.push(newComment);
-        }
-        return t
-    })
-    
-    comment_id_increment += 1;
-    pCallBack(TicketsAvailable)
+                                pCallBack:Dispatch<SetStateAction<CommentType[]>>){
+    const newComment:CommentType = {id:comment_id_increment, ticketId:pTicketId, senderId:pUserId,
+                                    body:pText, date:(new Date()).toISOString(), likes:[]}
+    fetch("http://localhost:3000/comment/", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newComment)
+    }).then((res) => {
+        res.json().then((comment) => {
+            pCallBack((pAllComment)=>[...pAllComment, comment]);
+        });
+    });
 }
 export function RemoveCommentTicket(pTicketId:number, pCommentId:number,
-                                    pCallBack=(_foo:ITicket[])=>{}){
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pTicketId){
-            // t.comments = t.comments.filter((c)=>(c.id!==pCommentId))
-        }
-        return t
-    })
-    pCallBack(TicketsAvailable)
+                                    pCallBack:Dispatch<SetStateAction<CommentType[]>>){
+    fetch("http://localhost:3000/comment/"+pCommentId+"?ticket_id="+pTicketId, {
+        method: "DELETE",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+    }).then((res) => {
+        res.json().then((comments) => {
+            pCallBack(comments);
+        });
+    });
 }
 export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:number,
-    pCallBack=(_foo:ITicket[])=>{}){
-    TicketsAvailable = TicketsAvailable.map((t)=>{
-        if (t.id==pTicketId){
-            // for (let i=0; i<t.comments.length; i++){
-            //     if (t.comments[i].id == pCommentId){
-            //         //Remove or add the user id to the like list
-            //         if (!t.comments[i].likes.includes(pUserId)) t.comments[i].likes.push(pUserId)
-            //         else t.comments[i].likes = t.comments[i].likes.filter((ids:number)=>ids!=pUserId)
-            //         break;
-            //     }
-            // }
-        }
-        return t
-    })
-    pCallBack(TicketsAvailable)
+    pCallBack:Dispatch<SetStateAction<CommentType[]>>){
+    fetch("http://localhost:3000/comment/like/" + pCommentId+"?ticket_id="+pTicketId, {
+        method: "PUT",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({userId:pUserId})
+    }).then((res) => {
+        res.json().then((comment) => {
+            pCallBack((COMMENTS)=>{
+                return COMMENTS.map((c)=>{
+                    if (c.id == comment.id) return comment;
+                    return c
+                })
+            });
+        });
+    });
 }

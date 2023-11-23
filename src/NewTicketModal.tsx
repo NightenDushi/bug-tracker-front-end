@@ -2,6 +2,7 @@ import { useState, useContext, useEffect, MouseEvent, KeyboardEvent} from 'react
 import { UserContext } from './App.tsx';
 import { ITicket } from './@types/tickets'
 import { CommentType } from './@types/comment'
+import { DevType } from './@types/dev'
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
@@ -61,11 +62,9 @@ export function NewTicketModal(props:NewTicketModalProps) {
   const [comments, setComments] = useState<CommentType[]>([])
   useEffect(() => {
     if (props.ticket_id!==undefined) {
-      console.log("foo "+props.ticket_id)
       GetComments(props.ticket_id, setComments)
     };
   }, [])
-  console.log(comments)
 
 
   if (isAdmin) return <div className="modal d-block modal-background" tabIndex={-1} role="dialog">
@@ -148,7 +147,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
         </div>
       {(props.ticket_id!==undefined && props.setTickets!==undefined
       && comments.length>0)&&
-        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
+        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setComments={setComments}/>)}
       </div>
     </div>
     {showAlertModal && (<AlertModal title={"Warning"} body={"Are you sure you want to delete this ticket?"}
@@ -204,21 +203,21 @@ export function NewTicketModal(props:NewTicketModalProps) {
         </div>
       {(props.ticket_id!==undefined && props.setTickets!==undefined
       && comments.length>0) &&
-        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setTickets={props.setTickets}/>)}
+        (<CommentSection comments={comments} ticketId={props.ticket_id} userId={user_id} userIsAdmin={isAdmin} setComments={setComments}/>)}
       </div>
     </div>
   </div>;
 }
 
 
-function CommentSection(props:{comments:CommentType[], ticketId:number, userId:number, userIsAdmin:boolean, setTickets:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void}){
+function CommentSection(props:{comments:CommentType[], ticketId:number, userId:number, userIsAdmin:boolean, setComments:(prevVar: CommentType[] | ((a: CommentType[]) => CommentType[])) => void}){
   const [commentFieldText, setCommentFieldText] = useState<string>("");
   const [seeMore, setSeeMore] = useState<boolean>(false);
   
-  const { comments, ticketId, userId, userIsAdmin, setTickets } = props;
+  const { comments, ticketId, userId, userIsAdmin, setComments } = props;
 
   const DEFAULT_DISPLAYED_COMMENTS = 3;
-  const SendComment = ()=>{setCommentFieldText("")}
+  const SendComment = ()=>{AddCommentTicket(userId, ticketId, commentFieldText, setComments);setCommentFieldText("")}
   return (<div className="container p-2">
             <p>Comments on this post : {comments.length}</p>
             <div className="d-flex">
@@ -233,26 +232,27 @@ function CommentSection(props:{comments:CommentType[], ticketId:number, userId:n
                 comments.map((c, c_index)=>{
                   if (Math.abs(comments.length-1-c_index)<DEFAULT_DISPLAYED_COMMENTS || seeMore){
                     return (
-                      <Comment key={c.id} dev={DevAvailable.find((d)=>d.id==c.senderId)} text={c.body}
+                      <Comment key={c.id} dev={DevAvailable.find((d)=>d.id==c.senderId) as unknown as DevType} text={c.body}
                             liked={c.likes.includes(userId)} likes_number={c.likes.length}
                             date={c.date} currentUserId={userId} currentUserIsAdmin={userIsAdmin}
-                            likeAction={()=>{LikeCommentTicket(userId, ticketId, c.id, setTickets)}}
-                            removeAction={()=>{RemoveCommentTicket(ticketId, c.id, setTickets)}}/>
+                            likeAction={()=>{LikeCommentTicket(userId, ticketId, c.id, setComments)}}
+                            removeAction={()=>{RemoveCommentTicket(ticketId, c.id, setComments)}}/>
                     )
                   }
                 }).reverse()
               }
-              {/* <Comment dev={DevAvailable.find((d)=>d.id==2)} text={"Dzień dobry!"}/> */}
               {(comments.length>DEFAULT_DISPLAYED_COMMENTS && !seeMore)&&(<a href="#" className="btn" onClick={()=>{setSeeMore(true)}}>See more...</a>)}
             </div>
           </div>
   )
 }
 
-function Comment(props){
+function Comment(props:{date:string, dev:DevType, text:string, liked:boolean, likes_number:number,
+                        currentUserId:number, currentUserIsAdmin:boolean,
+                        likeAction:()=>void, removeAction:()=>void}){
   return (
   <div className="position-relative container bg-light p-3 m-2 d-flex align-items-center comment">
-    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted {Interval(props.date)} ago</code>
+    <code className="position-absolute top-0 end-0 mt-1 me-2" style={{fontSize: "60%"}}>Posted {Interval(new Date(props.date))} ago</code>
     <DevAvatar dev={props.dev} />
     <p className="m-0 ms-2">{props.text}</p>
     <a href="#" onClick={props.likeAction} className={"ms-auto me-2 text-decoration-none position-relative comment-button "+((props.liked)?"activated":"")}>
