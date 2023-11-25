@@ -8,7 +8,7 @@ export let DevAvailable: DevType[] = [];
 // AddDev("oliwia", "01.d5f1f706.webp")
 
 export async function GetDev(pCallBack:Dispatch<SetStateAction<DevType[]>>, pSetCurrentUser:Dispatch<SetStateAction<DevType>>, pUserId:number){
-    const response = await fetch("http://localhost:3000/user");
+    const response = await fetch(window.location.origin+"/user");
     DevAvailable = await response.json();
 
     const loggedUser = DevAvailable.find((e)=>e.id==pUserId)||DevAvailable[0];
@@ -19,7 +19,7 @@ export async function GetDev(pCallBack:Dispatch<SetStateAction<DevType[]>>, pSet
 
 export function AddDev(pName:string, pImage:string, pCallBack=(_foo:DevType[])=>{}, pAdmin=false){
     const NewDev:DevType = {id:-1, name:pName, image:pImage, isAdmin:pAdmin}
-    fetch("http://localhost:3000/user", {
+    fetch(window.location.origin+"/user", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -36,7 +36,7 @@ export function AddDev(pName:string, pImage:string, pCallBack=(_foo:DevType[])=>
     });
 }
 export function RemoveDev(pDevId:number, pCallBack=(_foo:DevType[])=>{}){
-    fetch("http://localhost:3000/user/"+pDevId, {
+    fetch(window.location.origin+"/user/"+pDevId, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
@@ -65,7 +65,7 @@ export function RenameDev(pDev:DevType, pNewName:string, pCallBack:(prevVar: (De
     }
     RenameDevTimeOut = setTimeout(() => {
         pDev.name = pNewName;
-        fetch("http://localhost:3000/user/"+pDev.id, {
+        fetch(window.location.origin+"/user/"+pDev.id, {
             method: "PUT",
             mode: "cors",
             cache: "no-cache",
@@ -79,7 +79,7 @@ export function RenameDev(pDev:DevType, pNewName:string, pCallBack:(prevVar: (De
 }
 export function SetAdminDev(pDev:DevType, pNewAdminValue:boolean, pCallBack=(_foo:DevType[])=>{}){
     pDev.isAdmin = pNewAdminValue;
-    fetch("http://localhost:3000/user/"+pDev.id, {
+    fetch(window.location.origin+"/user/"+pDev.id, {
         method: "PUT",
         mode: "cors",
         cache: "no-cache",
