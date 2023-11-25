@@ -8,7 +8,7 @@ import { TagsAvailable, AddTags, RemoveTags, RenameTags, RecolorTags } from './c
 import { TicketsAvailable, ReplaceTicket } from './const/TicketsAvailable.tsx'
 import { AlertModal } from './AlertModal.tsx';
 
-export function ModalTagManagement(props){
+export function ModalTagManagement(props: { close: ()=>void; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void }){
     const [tagsAvailableState, setTagsAvailableState] = useState<ITags[]>(TagsAvailable)
 
     const [alertModalSubject, setAlertModalSubject] = useState<string>("");

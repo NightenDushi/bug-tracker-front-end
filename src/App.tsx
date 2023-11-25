@@ -67,7 +67,7 @@ function App() {
           </TicketFilterContext.Provider>
         </div>
         {showModalDev && (
-        <ModalDevManagement close={()=>{setShowModalDev(false)}} tickets={tickets} setTickets={setTickets} />)}
+        <ModalDevManagement close={()=>{setShowModalDev(false)}} tickets={tickets} setTickets={setTickets} user_id={user_id}/>)}
         
         {showNewTicketModal && (
         <NewTicketModal close={()=>{setShowNewTicketModal(false)}}

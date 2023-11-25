@@ -28,7 +28,7 @@ function RemoveDevFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=
     })
 }
 
-export function ModalDevManagement(props) {
+export function ModalDevManagement(props: { close: ()=>void; user_id: number; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void; }) {
     const [devAvailableState, setDevAvailableState] = useState(DevAvailable)
 
     const [showAlertModal, setShowAlertModal] = useState<boolean>(false)

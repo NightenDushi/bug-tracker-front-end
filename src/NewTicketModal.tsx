@@ -6,7 +6,7 @@ import { DevType } from './@types/dev'
 
 import { DevAvailable } from './const/DevAvailable.tsx';
 import { TagsAvailable } from './const/TagsAvailable.tsx';
-import { TicketsAvailable, RemoveTicket, GetComments, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
+import { RemoveTicket, GetComments, AddCommentTicket, RemoveCommentTicket, LikeCommentTicket } from './const/TicketsAvailable.tsx';
 
 import { TicketDueDate } from './Tickets/TicketDueDate.tsx';
 import { DevAvatar } from './DevAvatar.tsx';

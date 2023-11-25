@@ -1,10 +1,10 @@
 import { UserContext } from './App.tsx';
-import { useContext, useState } from 'react';
+import { MouseEventHandler, useContext, useState } from 'react';
 
 import { DevAvatar } from './DevAvatar.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 
-export default function LoggedNavBar(props){
+export default function LoggedNavBar(props: { isAdmin: any; setShowModalDev: MouseEventHandler<HTMLAnchorElement> | undefined; setShowModalTag: MouseEventHandler<HTMLAnchorElement> | undefined; }){
     const {id, setId} = useContext(UserContext);
     const [showChangeAccount,setShowChangeAccount] = useState<boolean>(false)
 
@@ -33,7 +33,7 @@ export default function LoggedNavBar(props){
     )
 }
 
-function ModalChangeAccount(props){
+function ModalChangeAccount(props: { close: MouseEventHandler<HTMLAnchorElement>; currentAccount: any; id: number; change: (arg0: number) => void; }){
     return <div className="position-absolute bg-light p-3 pb-2 pt-2 end-0 top-0 shadow rounded-pill" style={{}}>
         <a className="d-block mb-2" href="#" onClick={props.close}>
             <DevAvatar dev={props.currentAccount}/>
@@ -41,8 +41,8 @@ function ModalChangeAccount(props){
         {DevAvailable.map((dev)=>{
             const dev_activated = (dev.id!=props.id);
             return <a key={dev.id} className={"d-block mb-2 "+(dev_activated?"":"d-none")} href="#"
-                onClick={()=>{
-                    props.change(dev.id); props.close();
+                onClick={(e)=>{
+                    props.change(dev.id); props.close(e);
                 }}
                 >
                     <DevAvatar key={dev.name} dev={dev}/>
