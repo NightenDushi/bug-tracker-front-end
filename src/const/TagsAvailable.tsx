@@ -4,13 +4,13 @@ import { ITags } from '../@types/tags'
 export let TagsAvailable: ITags[] = []
 
 export async function GetTags(pCallBack:Dispatch<SetStateAction<ITags[]>>){
-    const response = await fetch("https://bug-mine.nathan-guilhot.com/tag");
+    const response = await fetch(window.location.origin+"/tag");
     TagsAvailable = await response.json();
     pCallBack(TagsAvailable)
 } 
 export function AddTags(pText:string, pColor:string, pCallBack=(_foo:ITags[])=>{}){
     const NewTag:ITags = {id:-1, text:pText, color:pColor}
-    fetch("https://bug-mine.nathan-guilhot.com/tag", {
+    fetch(window.location.origin+"/tag", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -42,7 +42,7 @@ export function RenameTags(pTag:ITags, pNewName:string, pCallBack:(prevVar: (ITa
     }
     RenameTagTimeOut = setTimeout(() => {
         pTag.text = pNewName;
-        fetch("https://bug-mine.nathan-guilhot.com/tag/"+pTag.id, {
+        fetch(window.location.origin+"/tag/"+pTag.id, {
             method: "PUT",
             mode: "cors",
             cache: "no-cache",
@@ -56,7 +56,7 @@ export function RenameTags(pTag:ITags, pNewName:string, pCallBack:(prevVar: (ITa
 }
 export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[])=>{}){
     pTag.color = pNewColor;
-    fetch("https://bug-mine.nathan-guilhot.com/tag/"+pTag.id, {
+    fetch(window.location.origin+"/tag/"+pTag.id, {
         method: "PUT",
         mode: "cors",
         cache: "no-cache",
@@ -76,7 +76,7 @@ export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[
     });
 }
 export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
-    fetch("https://bug-mine.nathan-guilhot.com/tag/"+pId, {
+    fetch(window.location.origin+"/tag/"+pId, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
