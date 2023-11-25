@@ -8,7 +8,6 @@ export let DevAvailable: DevType[] = [];
 // AddDev("oliwia", "01.d5f1f706.webp")
 
 export async function GetDev(pCallBack:Dispatch<SetStateAction<DevType[]>>, pSetCurrentUser:Dispatch<SetStateAction<DevType>>, pUserId:number){
-    const response = await fetch("https://bug-mine.nathan-guilhot.com/user");
     const response = await fetch(window.location.origin+"/user");
     DevAvailable = await response.json();
 
