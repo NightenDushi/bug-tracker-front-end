@@ -9,7 +9,7 @@ export let TicketsAvailable:ITicket[] = []
 
 export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
     //NOTE: Backend code -> https://github.com/NightenDushi/bug-tracker-node-ts
-    const response = await fetch("http://localhost:3000/ticket");
+    const response = await fetch("https://bug-mine.nathan-guilhot.com/ticket");
     TicketsAvailable = await response.json();
     TicketsAvailable = ParseTicketsDatabase(TicketsAvailable);
     pCallBack(TicketsAvailable);
@@ -40,7 +40,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
     if (pDueDate!=="") NewTicket.dueDate = new Date(pDueDate);
     
     // TicketsAvailable = [...TicketsAvailable, NewTicket]
-    fetch("http://localhost:3000/ticket", {
+    fetch("https://bug-mine.nathan-guilhot.com/ticket", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -59,7 +59,7 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
 }
 
 export function RemoveTicket(pTicketId:number, pCallBack=(_foo:ITicket[])=>{}){
-    fetch("http://localhost:3000/ticket/"+ pTicketId, {
+    fetch("https://bug-mine.nathan-guilhot.com/ticket/"+ pTicketId, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
@@ -103,7 +103,7 @@ export function PublishTicket(pTicket:ITicketDatabase, pCallBack=(_foo:ITicket[]
 }
 
 function SendSingleTicket(pTicket: ITicketDatabase, pCallBack: (_foo: ITicket[]) => void) {
-    fetch("http://localhost:3000/ticket/" + pTicket.id, {
+    fetch("https://bug-mine.nathan-guilhot.com/ticket/" + pTicket.id, {
         method: "PUT",
         mode: "cors",
         cache: "no-cache",
@@ -125,7 +125,7 @@ function SendSingleTicket(pTicket: ITicketDatabase, pCallBack: (_foo: ITicket[])
 
 
 export async function GetComments(pTicketId:number, pCallBack=(_foo:CommentType[])=>{}){
-    const response = await fetch("http://localhost:3000/comment?ticket_id="+pTicketId);
+    const response = await fetch("https://bug-mine.nathan-guilhot.com/comment?ticket_id="+pTicketId);
     const comments = await response.json();
     pCallBack(comments);
 }
@@ -133,7 +133,7 @@ export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
                                 pCallBack:Dispatch<SetStateAction<CommentType[]>>){
     const newComment:CommentType = {id:comment_id_increment, ticketId:pTicketId, senderId:pUserId,
                                     body:pText, date:(new Date()).toISOString(), likes:[]}
-    fetch("http://localhost:3000/comment/", {
+    fetch("https://bug-mine.nathan-guilhot.com/comment/", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -150,7 +150,7 @@ export function AddCommentTicket(pUserId:number, pTicketId:number, pText:string,
 }
 export function RemoveCommentTicket(pTicketId:number, pCommentId:number,
                                     pCallBack:Dispatch<SetStateAction<CommentType[]>>){
-    fetch("http://localhost:3000/comment/"+pCommentId+"?ticket_id="+pTicketId, {
+    fetch("https://bug-mine.nathan-guilhot.com/comment/"+pCommentId+"?ticket_id="+pTicketId, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
@@ -163,7 +163,7 @@ export function RemoveCommentTicket(pTicketId:number, pCommentId:number,
 }
 export function LikeCommentTicket(pUserId:number, pTicketId:number, pCommentId:number,
     pCallBack:Dispatch<SetStateAction<CommentType[]>>){
-    fetch("http://localhost:3000/comment/like/" + pCommentId+"?ticket_id="+pTicketId, {
+    fetch("https://bug-mine.nathan-guilhot.com/comment/like/" + pCommentId+"?ticket_id="+pTicketId, {
         method: "PUT",
         mode: "cors",
         cache: "no-cache",

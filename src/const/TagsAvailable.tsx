@@ -4,13 +4,13 @@ import { ITags } from '../@types/tags'
 export let TagsAvailable: ITags[] = []
 
 export async function GetTags(pCallBack:Dispatch<SetStateAction<ITags[]>>){
-    const response = await fetch("http://localhost:3000/tag");
+    const response = await fetch("https://bug-mine.nathan-guilhot.com/tag");
     TagsAvailable = await response.json();
     pCallBack(TagsAvailable)
 } 
 export function AddTags(pText:string, pColor:string, pCallBack=(_foo:ITags[])=>{}){
     const NewTag:ITags = {id:-1, text:pText, color:pColor}
-    fetch("http://localhost:3000/tag", {
+    fetch("https://bug-mine.nathan-guilhot.com/tag", {
         method: "POST",
         mode: "cors",
         cache: "no-cache",
@@ -42,7 +42,7 @@ export function RenameTags(pTag:ITags, pNewName:string, pCallBack:(prevVar: (ITa
     }
     RenameTagTimeOut = setTimeout(() => {
         pTag.text = pNewName;
-        fetch("http://localhost:3000/tag/"+pTag.id, {
+        fetch("https://bug-mine.nathan-guilhot.com/tag/"+pTag.id, {
             method: "PUT",
             mode: "cors",
             cache: "no-cache",
@@ -56,7 +56,7 @@ export function RenameTags(pTag:ITags, pNewName:string, pCallBack:(prevVar: (ITa
 }
 export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[])=>{}){
     pTag.color = pNewColor;
-    fetch("http://localhost:3000/tag/"+pTag.id, {
+    fetch("https://bug-mine.nathan-guilhot.com/tag/"+pTag.id, {
         method: "PUT",
         mode: "cors",
         cache: "no-cache",
@@ -76,7 +76,7 @@ export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[
     });
 }
 export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
-    fetch("http://localhost:3000/tag/"+pId, {
+    fetch("https://bug-mine.nathan-guilhot.com/tag/"+pId, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
