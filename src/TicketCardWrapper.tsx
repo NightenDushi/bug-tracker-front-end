@@ -1,7 +1,7 @@
 import { useContext, MouseEventHandler, MouseEvent } from 'react';
 import { ITicket, ITickets_props } from './@types/tickets';
 import TicketCard from './Tickets/TicketCard.tsx';
-import { TicketFilterContext } from './App.tsx';
+import { TicketFilterContext } from './Context.tsx';
 
 import { MarkcompleteTicket, PublishTicket } from './const/TicketsAvailable.tsx'
 

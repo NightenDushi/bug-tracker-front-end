@@ -1,10 +1,10 @@
-import { UserContext } from './App.tsx';
+import { UserContext } from './Context.tsx';
 import { MouseEventHandler, useContext, useState } from 'react';
 
 import { DevAvatar } from './DevAvatar.tsx'
 import { DevAvailable } from './const/DevAvailable.tsx'
 
-export default function LoggedNavBar(props: { isAdmin: any; setShowModalDev: MouseEventHandler<HTMLAnchorElement> | undefined; setShowModalTag: MouseEventHandler<HTMLAnchorElement> | undefined; }){
+export default function LoggedNavBar(props: { isAdmin: any; setLogged:(_foo:boolean)=>void; setShowModalDev: MouseEventHandler<HTMLAnchorElement> | undefined; setShowModalTag: MouseEventHandler<HTMLAnchorElement> | undefined; }){
     const {id, setId} = useContext(UserContext);
     const [showChangeAccount,setShowChangeAccount] = useState<boolean>(false)
 
@@ -15,7 +15,7 @@ export default function LoggedNavBar(props: { isAdmin: any; setShowModalDev: Mou
             <a className="nav-link active" href="#">Tickets</a>
             <a className="nav-link" href="#">Profile</a>
             <a className="nav-link" href="#">Notification</a>
-            <a className="nav-link" href="#">Logout</a>
+            <a className="nav-link" href="#" onClick={()=>{props.setLogged(false)}}>Logout</a>
             {
                 props.isAdmin &&
                 (<>
