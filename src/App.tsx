@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { createBrowserRouter,  RouterProvider } from "react-router-dom";
 
 import './App.css'
+import AuthRedirect from './auth-redirect.tsx'
 import LoginForm from './LoginForm.tsx'
 import LoggedApp from './LoggedApp.tsx'
 import LandingPage from './LandingPage.tsx'
@@ -23,6 +24,10 @@ function App() {
           element: <LoginForm SubmitAction={()=>{setLogged(true)}} />,
         },
       ]
+    },
+    {
+      path: "auth/redirect",
+      element: <AuthRedirect setLogged={setLogged} />
     },
     {
       path: "/dashboard",
