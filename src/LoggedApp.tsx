@@ -1,9 +1,8 @@
 import { useState, useEffect, createContext } from 'react';
+import { Navigate } from 'react-router-dom'
 
-import { UserType } from './@types/user';
 import { ITicket } from './@types/tickets'
 import { ITags } from './@types/tags'
-import { TicketFilterType } from './@types/ticketfilter'
 import { DevType } from './@types/dev'
 
 import { UserContext, TicketFilterContext } from './Context.tsx';
@@ -19,7 +18,7 @@ import { TicketsAvailable, AddTicket, GetTicket } from './const/TicketsAvailable
 import { DevAvailable, GetDev } from './const/DevAvailable.tsx'
 import { TagsAvailable, GetTags } from './const/TagsAvailable.tsx'
 
-function LoggedApp(props:{setLogged:(_foo:boolean)=>void}){
+function LoggedApp(props:{isLogged:boolean, setLogged:(_foo:boolean)=>void}){
     const [tickets, setTickets] = useState<ITicket[]>(TicketsAvailable);
     const [devs, setDevs] = useState<DevType[]>(DevAvailable);
     
@@ -43,7 +42,11 @@ function LoggedApp(props:{setLogged:(_foo:boolean)=>void}){
         GetTags(setTags)
       }, [])
 
-    return (<><UserContext.Provider value={{id:user_id, setId:setUserId}}>
+    return (<>
+    
+    {(!props.isLogged) && <Navigate to="/" />}
+    
+    <UserContext.Provider value={{id:user_id, setId:setUserId}}>
     <LoggedNavBar isAdmin={currentUser.isAdmin} setLogged={props.setLogged} setShowModalDev={()=>{setShowModalDev(true)}} setShowModalTag={()=>{setShowModalTag(true)}} />
     <div className="container grid">
       <h1>My tickets</h1>
