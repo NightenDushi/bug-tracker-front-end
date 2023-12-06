@@ -2,7 +2,8 @@ import crownIcon from './assets/crown-solid.svg'
 
 export function DevAvatar(pProps:{dev:any, avatarFolder?:boolean, activated?:boolean, deactivatedClass?:string}){
     const {dev, ...props} = pProps;
-    const useAvatarFolder = (props.avatarFolder===undefined)?true:props.avatarFolder;
+    let useAvatarFolder = (props.avatarFolder===undefined)?true:props.avatarFolder;
+    if (dev?.image.startsWith("https")) useAvatarFolder = false;
     const activated = (props.activated===undefined)?true:props.activated;
     return (
     <>
