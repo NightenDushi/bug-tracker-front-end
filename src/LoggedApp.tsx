@@ -23,7 +23,7 @@ function LoggedApp(props:{isLogged:boolean, setLogged:(_foo:boolean)=>void}){
     const [devs, setDevs] = useState<DevType[]>(DevAvailable);
     
     const [user_id, setUserId] = useState<number>(1);
-    const [currentUser, setCurrentUser] = useState<DevType>({id:1,name:"", image:"", isAdmin:false});
+    const [currentUser, setCurrentUser] = useState<DevType>({id:1,name:"", image:"", isAdmin:false, github_id:null});
     
     const [tags, setTags] = useState<ITags[]>(TagsAvailable);
     

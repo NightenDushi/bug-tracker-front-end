@@ -26,7 +26,7 @@ function App() {
       ]
     },
     {
-      path: "auth/redirect",
+      path: "auth/redirect/:service",
       element: <AuthRedirect setLogged={setLogged} />
     },
     {
