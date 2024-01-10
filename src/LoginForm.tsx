@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-export default function LoginForm(props:{SubmitAction:()=>void}){
+export default function LoginForm(props:{SubmitAction:(_id:number)=>void}){
     return (
         <div className="modal d-block">
             <div className="modal-dialog" role="document">
@@ -16,7 +16,7 @@ export default function LoginForm(props:{SubmitAction:()=>void}){
                 </div>
             </div>
             <div className="modal-footer">
-            <a className="btn btn-primary" onClick={props.SubmitAction}>Submit</a>
+            <a className="btn btn-primary" onClick={()=>{props.SubmitAction(1)}}>Submit</a>
             </div>
             </div>
             </div>

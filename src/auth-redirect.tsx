@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigate, useParams} from "react-router-dom";
 import { DevType } from "./@types/dev";
 
-export default function AuthRedirect(props:{setLogged:(_foo:boolean)=>void}){
+export default function AuthRedirect(props:{setLogged:(_foo:number)=>void}){
     const { service } = useParams();
     const [loaded, setLoaded] = useState<boolean>(false)
 
@@ -23,7 +23,7 @@ export default function AuthRedirect(props:{setLogged:(_foo:boolean)=>void}){
     return (loaded)&&(<Navigate to="/dashboard"/>)||<p>Please wait...</p>
 }
 
-function AuthGithub(usercode: string | null, setLoaded:(_foo:boolean)=>void, props: { setLogged: (_foo: boolean) => void; }) {
+function AuthGithub(usercode: string | null, setLoaded:(_foo:boolean)=>void, props: { setLogged: (_foo: number) => void; }) {
     fetch(`${window.location.origin}/auth/github?code=${usercode}`).then((res) => {
         res.json().then((user) => {
             setLoaded(true);
@@ -50,8 +50,7 @@ function AuthGithub(usercode: string | null, setLoaded:(_foo:boolean)=>void, pro
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify(GitHubUser)
-                        });
-                        props.setLogged(true);
+                        }).then((res)=>{res.json().then((user)=>{props.setLogged(user.id)})});
                     });
                 });
         });

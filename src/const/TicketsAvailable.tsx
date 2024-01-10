@@ -7,9 +7,9 @@ let ticket_id_increment = 0;
 let comment_id_increment = 0;
 export let TicketsAvailable:ITicket[] = []
 
-export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>){
+export async function GetTicket(pCallBack:Dispatch<SetStateAction<ITicket[]>>, pProject_id:number){
     //NOTE: Backend code -> https://github.com/NightenDushi/bug-tracker-node-ts
-    const response = await fetch(window.location.origin+"/ticket");
+    const response = await fetch(`${window.location.origin}+"/ticket?project_id=${pProject_id}`);
     TicketsAvailable = await response.json();
     TicketsAvailable = ParseTicketsDatabase(TicketsAvailable);
     pCallBack(TicketsAvailable);
@@ -30,10 +30,9 @@ function ParseTicketDatabase(pTicket:any){
 
 export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:ITags[], 
                         pPersonAssigned:number[], pDueDate:string="", pIsDone=false, pIsDraft=true,
-                        pCallBack=(_foo:ITicket[])=>{}){
+                        pProjectId:number, pCallBack=(_foo:ITicket[])=>{}){
     const NewTicket:ITicketDatabase = {id:ticket_id_increment,isDone:pIsDone, isDraft:pIsDraft, urgency:pUrgency,
-                                title:pTitle, body:pBody,
-                                tags:[], person_assigned:pPersonAssigned}
+                                title:pTitle, body:pBody, tags:[], person_assigned:pPersonAssigned, project_id:pProjectId}
     for (let i=0; i<pTags.length; i++){
         NewTicket.tags.push(pTags[i].id);
     }
@@ -58,8 +57,8 @@ export function AddTicket(pTitle:string, pBody:string, pUrgency:number, pTags:IT
 
 }
 
-export function RemoveTicket(pTicketId:number, pCallBack=(_foo:ITicket[])=>{}){
-    fetch(window.location.origin+"/ticket/"+ pTicketId, {
+export function RemoveTicket(pTicketId:number, pCallBack=(_foo:ITicket[])=>{}, pProject_id:number){
+    fetch(`${window.location.origin}/ticket/${pTicketId}?project_id=${pProject_id}`, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",
@@ -76,7 +75,8 @@ export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrg
     pPersonAssigned:number[], pDueDate:string="", pIsDraft=true,
     pCallBack=(_foo:ITicket[])=>{}){
 
-    const NewTicket:ITicketDatabase = {"id":pTicket.id,
+    const NewTicket:ITicketDatabase = {
+                "id":pTicket.id,
                 "isDone":pTicket.isDone,
 
                 "isDraft": pIsDraft,
@@ -86,6 +86,7 @@ export function ReplaceTicket(pTicket:ITicket, pTitle:string, pBody:string, pUrg
                 "tags": pTags,
                 "person_assigned": pPersonAssigned,
                 "dueDate":(pDueDate!=="")? new Date(pDueDate):undefined,
+                "project_id":-1
                 }
 
     SendSingleTicket(NewTicket, pCallBack);

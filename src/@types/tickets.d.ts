@@ -22,7 +22,8 @@ export interface ITicketDatabase{
     body:string,
     tags:number[], //list of ids
     person_assigned:number[],
-    dueDate?:Date
+    dueDate?:Date,
+    project_id:number,
   }
 
 export type ITicket_props = {

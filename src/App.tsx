@@ -9,9 +9,11 @@ import LoggedApp from './LoggedApp.tsx'
 import LandingPage from './LandingPage.tsx'
 import ErrorPage from "./error-page.tsx";
 
+import ProjectDashboard from './ProjectDashboard';
+
 
 function App() {
-  const [isLoggedIn, setLogged] = useState<boolean>(false);
+  const [isLoggedIn, setLogged] = useState<number>(-1);
   
   const router = createBrowserRouter([
     {
@@ -21,7 +23,7 @@ function App() {
       children:[
         {
           path: "/login",
-          element: <LoginForm SubmitAction={()=>{setLogged(true)}} />,
+          element: <LoginForm SubmitAction={(pId:number)=>{setLogged(pId)}} />,
         },
       ]
     },
@@ -32,6 +34,11 @@ function App() {
     {
       path: "/dashboard",
       element: <LoggedApp isLogged={isLoggedIn} setLogged={setLogged}/>,
+      errorElement: <ErrorPage />
+    },
+    {
+      path: "/dashboard/:project_id",
+      element: <ProjectDashboard isLogged={isLoggedIn} setLogged={setLogged}/>,
       errorElement: <ErrorPage />
     },
   ]);

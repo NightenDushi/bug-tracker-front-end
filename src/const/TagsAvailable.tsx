@@ -3,8 +3,8 @@ import { ITags } from '../@types/tags'
 
 export let TagsAvailable: ITags[] = []
 
-export async function GetTags(pCallBack:Dispatch<SetStateAction<ITags[]>>){
-    const response = await fetch(window.location.origin+"/tag");
+export async function GetTags(pCallBack:Dispatch<SetStateAction<ITags[]>>, pProject_id:number){
+    const response = await fetch(`${window.location.origin}/tag?project_id=${pProject_id}`);
     TagsAvailable = await response.json();
     pCallBack(TagsAvailable)
 } 
@@ -75,8 +75,8 @@ export function RecolorTags(pTag:ITags, pNewColor:string, pCallBack=(_foo:ITags[
         })
     });
 }
-export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}){
-    fetch(window.location.origin+"/tag/"+pId, {
+export function RemoveTags(pId:number, pCallBack=(_foo:ITags[])=>{}, pProjectId:number){
+    fetch(`${window.location.origin}/tag/${pId}?project_id=${pProjectId}`, {
         method: "DELETE",
         mode: "cors",
         cache: "no-cache",

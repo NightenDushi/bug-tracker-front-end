@@ -8,7 +8,7 @@ import { TagsAvailable, AddTags, RemoveTags, RenameTags, RecolorTags } from './c
 import { TicketsAvailable, ReplaceTicket } from './const/TicketsAvailable.tsx'
 import { AlertModal } from './AlertModal.tsx';
 
-export function ModalTagManagement(props: { close: ()=>void; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void }){
+export function ModalTagManagement(props: { project_id:number, close: ()=>void; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void }){
     const [tagsAvailableState, setTagsAvailableState] = useState<ITags[]>(TagsAvailable)
 
     const [alertModalSubject, setAlertModalSubject] = useState<string>("");
@@ -34,7 +34,7 @@ export function ModalTagManagement(props: { close: ()=>void; tickets: ITicket[];
                                 <a href="#" className="text-danger align-self-center"
                                     onClick={()=>{if(tagsInTickets(props.tickets, tag.id))
                                         {setAlertModalSubject(tag.text);setAlertModalSubjectId(tag.id); setShowAlertModal(true)}
-                                    else RemoveTags(tag.id, setTagsAvailableState)}}> Remove </a>
+                                    else RemoveTags(tag.id, setTagsAvailableState, props.project_id)}}> Remove </a>
                             </ColorPicker>
                         </div>
                     )}
@@ -53,7 +53,7 @@ export function ModalTagManagement(props: { close: ()=>void; tickets: ITicket[];
             close={()=>{setShowAlertModal(false)}} 
             ok={()=>{
                 RemoveTagFromTickets(alertModalSubjectId, props.setTickets)
-                RemoveTags(alertModalSubjectId, setTagsAvailableState);
+                RemoveTags(alertModalSubjectId, setTagsAvailableState, props.project_id);
                 setShowAlertModal(false);
             }}
         />)}

@@ -28,7 +28,7 @@ function RemoveDevFromTickets(pSetTickets:(prevVar: (ITicket[] | ((a:ITicket[])=
     })
 }
 
-export function ModalDevManagement(props: { close: ()=>void; user_id: number; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void; }) {
+export function ModalDevManagement(props: { project_id:number, close: ()=>void; user_id: number; tickets: ITicket[]; setTickets: (prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void; }) {
     const [devAvailableState, setDevAvailableState] = useState(DevAvailable)
 
     const [showAlertModal, setShowAlertModal] = useState<boolean>(false)
@@ -61,7 +61,7 @@ export function ModalDevManagement(props: { close: ()=>void; user_id: number; ti
                                 </div>
                                 <a className="text-danger text-decoration-none ms-2 align-self-end" href="#"
                                 onClick={() => {if(userInTickets(props.tickets, dev.id)){setAlertModalSubject(devNameCapitalized);setAlertModalSubjectId(dev.id); setShowAlertModal(true)}
-                                            else RemoveDev(dev.id, setDevAvailableState)}}> Remove </a>
+                                            else RemoveDev(dev.id, setDevAvailableState, props.project_id)}}> Remove </a>
                             </>)}
                         </div>;
                     })}
@@ -82,7 +82,7 @@ export function ModalDevManagement(props: { close: ()=>void; user_id: number; ti
             close={()=>{setShowAlertModal(false)}} 
             ok={()=>{
                 RemoveDevFromTickets(props.setTickets, alertModalSubjectId)
-                RemoveDev(alertModalSubjectId, setDevAvailableState);
+                RemoveDev(alertModalSubjectId, setDevAvailableState, props.project_id);
                 setShowAlertModal(false);
             }}
         />)}

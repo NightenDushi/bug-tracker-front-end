@@ -31,6 +31,7 @@ type NewTicketModalProps = {
   person_assigned?:number[],
   dueDate?:string,
   comments_number?:number,
+  project_id:number,
   close:()=>void,
   actionTicketModal:(...args:any)=>void,
   setTickets?:(prevVar: ITicket[] | ((a: ITicket[]) => ITicket[])) => void,
@@ -153,7 +154,7 @@ export function NewTicketModal(props:NewTicketModalProps) {
     {showAlertModal && (<AlertModal title={"Warning"} body={"Are you sure you want to delete this ticket?"}
     close={()=>{setShowAlertModal(false)}} 
     ok={()=>{
-      RemoveTicket(props.ticket_id as number, props.setTickets);
+      RemoveTicket(props.ticket_id as number, props.setTickets, props.project_id);
       setShowAlertModal(false);
     }}
     />)}
